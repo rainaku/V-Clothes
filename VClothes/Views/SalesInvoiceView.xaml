@@ -1,0 +1,224 @@
+<UserControl x:Class="VClothes.Views.SalesInvoiceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:VClothes.Converters">
+
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:CurrencyConverter x:Key="CurrencyConverter"/>
+        <converters:StringNotEmptyConverter x:Key="StringNotEmpty"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="420"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left: Invoice List -->
+        <Border Style="{StaticResource CardStyle}" Margin="0,0,12,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,16">
+                    <TextBlock Text="Danh sách hóa đơn bán" Style="{StaticResource HeadlineStyle}"/>
+                    <Button Content="+ Tạo hóa đơn" 
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding CreateCommand}"
+                            HorizontalAlignment="Right"/>
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource SearchTextBoxStyle}"/>
+                    <DatePicker Grid.Column="1" SelectedDate="{Binding FilterFromDate}"
+                                Style="{StaticResource MacDatePickerStyle}"
+                                Width="130" Margin="8,0,0,0"/>
+                    <DatePicker Grid.Column="2" SelectedDate="{Binding FilterToDate}"
+                                Style="{StaticResource MacDatePickerStyle}"
+                                Width="130" Margin="8,0,0,0"/>
+                </Grid>
+
+                <DataGrid Grid.Row="2" 
+                          ItemsSource="{Binding Invoices}"
+                          SelectedItem="{Binding SelectedInvoice}"
+                          Style="{StaticResource MacDataGridStyle}"
+                          ColumnHeaderStyle="{StaticResource MacDataGridColumnHeaderStyle}"
+                          CellStyle="{StaticResource MacDataGridCellStyle}"
+                          RowStyle="{StaticResource MacDataGridRowStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Mã HĐ" Binding="{Binding InvoiceCode}" Width="90"/>
+                        <DataGridTextColumn Header="Ngày" Binding="{Binding InvoiceDate, StringFormat=dd/MM/yyyy}" Width="90"/>
+                        <DataGridTextColumn Header="Khách hàng" Binding="{Binding Customer.Name}" Width="*"/>
+                        <DataGridTextColumn Header="Tổng tiền" Binding="{Binding FinalAmount, Converter={StaticResource CurrencyConverter}}" Width="120"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- Right: Create Invoice Form -->
+        <Border Grid.Column="1" Style="{StaticResource CardStyle}"
+                Visibility="{Binding IsCreating, Converter={StaticResource BoolToVisibility}}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Tạo hóa đơn bán hàng" 
+                               Style="{StaticResource HeadlineStyle}" Margin="0,0,0,16"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="MÃ HÓA ĐƠN" Style="{StaticResource FormLabelStyle}"/>
+                            <TextBox Text="{Binding EditInvoiceCode, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource MacTextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="NGÀY BÁN" Style="{StaticResource FormLabelStyle}"/>
+                            <DatePicker SelectedDate="{Binding EditInvoiceDate}"
+                                        Style="{StaticResource MacDatePickerStyle}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Margin="0,12,0,0">
+                        <TextBlock Text="KHÁCH HÀNG" Style="{StaticResource FormLabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding Customers}"
+                                  SelectedItem="{Binding EditCustomer}"
+                                  DisplayMemberPath="Name"
+                                  Style="{StaticResource MacComboBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,12,0,0">
+                        <TextBlock Text="GHI CHÚ" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditNote, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource MacTextBoxStyle}" 
+                                 Height="40" TextWrapping="Wrap" AcceptsReturn="True"
+                                 VerticalContentAlignment="Top"/>
+                    </StackPanel>
+
+                    <!-- Add Product to Invoice -->
+                    <Border Background="{StaticResource HoverBackgroundBrush}" 
+                            CornerRadius="8" Padding="12" Margin="0,16,0,12">
+                        <StackPanel>
+                            <TextBlock Text="THÊM SẢN PHẨM VÀO HÓA ĐƠN" Style="{StaticResource FormLabelStyle}"/>
+                            <ComboBox ItemsSource="{Binding Products}"
+                                      SelectedItem="{Binding SelectedProduct}"
+                                      DisplayMemberPath="Name"
+                                      Style="{StaticResource MacComboBoxStyle}" Margin="0,0,0,8"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding EditQuantity, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource MacTextBoxStyle}"
+                                         Tag="Số lượng"/>
+                                <TextBox Grid.Column="2" 
+                                         Text="{Binding EditUnitPrice, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource MacTextBoxStyle}"
+                                         Tag="Đơn giá"/>
+                                <Button Grid.Column="4" Content="Thêm" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Command="{Binding AddDetailCommand}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Detail Items -->
+                    <DataGrid ItemsSource="{Binding InvoiceDetails}"
+                              Style="{StaticResource MacDataGridStyle}"
+                              RowHeight="36" MaxHeight="180"
+                              ColumnHeaderStyle="{StaticResource MacDataGridColumnHeaderStyle}"
+                              CellStyle="{StaticResource MacDataGridCellStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Sản phẩm" Binding="{Binding ProductName}" Width="*"/>
+                            <DataGridTextColumn Header="SL" Binding="{Binding Quantity}" Width="45"/>
+                            <DataGridTextColumn Header="Đơn giá" Binding="{Binding UnitPrice, Converter={StaticResource CurrencyConverter}}" Width="95"/>
+                            <DataGridTextColumn Header="Thành tiền" Binding="{Binding Total, Converter={StaticResource CurrencyConverter}}" Width="105"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Totals -->
+                    <Border Background="{StaticResource HoverBackgroundBrush}" 
+                            CornerRadius="8" Padding="12" Margin="0,12,0,0">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,6">
+                                <TextBlock Text="Tổng tiền hàng:" Style="{StaticResource SecondaryBodyStyle}"/>
+                                <TextBlock Text="{Binding TotalAmount, Converter={StaticResource CurrencyConverter}}" 
+                                           HorizontalAlignment="Right"
+                                           FontFamily="{StaticResource SFProFont}" FontWeight="Medium"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,6">
+                                <TextBlock Text="Giảm giá:" Style="{StaticResource SecondaryBodyStyle}"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <TextBox Text="{Binding EditDiscount, UpdateSourceTrigger=PropertyChanged}" 
+                                             Style="{StaticResource MacTextBoxStyle}"
+                                             Width="100" Height="28" FontSize="12"/>
+                                </StackPanel>
+                            </Grid>
+                            <Separator Style="{StaticResource SeparatorStyle}"/>
+                            <Grid>
+                                <TextBlock Text="THANH TOÁN:" 
+                                           FontFamily="{StaticResource SFProFont}"
+                                           FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding FinalAmount, Converter={StaticResource CurrencyConverter}}" 
+                                           FontFamily="{StaticResource SFProFont}"
+                                           FontSize="20" FontWeight="Bold"
+                                           Foreground="{StaticResource AccentGreenBrush}"
+                                           HorizontalAlignment="Right"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Validation -->
+                    <TextBlock Text="{Binding ValidationMessage}" 
+                               FontFamily="{StaticResource SFProFont}" FontSize="12"
+                               TextWrapping="Wrap" Margin="0,12,0,12">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{StaticResource AccentRedBrush}"/>
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ValidationMessage, Converter={StaticResource StringNotEmpty}}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Hủy" Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding CancelCommand}" Margin="0,0,8,0"/>
+                        <Button Content="Lưu hóa đơn" Style="{StaticResource SuccessButtonStyle}"
+                                Command="{Binding SaveCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <Border Grid.Column="1" Style="{StaticResource CardStyle}"
+                Visibility="{Binding IsCreating, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="🧾" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                <TextBlock Text="Tạo hóa đơn mới hoặc&#x0a;chọn hóa đơn để xem chi tiết" 
+                           Style="{StaticResource SecondaryBodyStyle}" 
+                           HorizontalAlignment="Center" TextAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

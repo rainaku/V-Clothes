@@ -1,0 +1,145 @@
+<UserControl x:Class="VClothes.Views.ReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:VClothes.Converters">
+
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:CurrencyConverter x:Key="CurrencyConverter"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Report Selection & Filters -->
+        <Border Grid.Row="0" Style="{StaticResource CardStyle}" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Loại báo cáo:" VerticalAlignment="Center" 
+                           Style="{StaticResource SecondaryBodyStyle}" Margin="0,0,8,0"/>
+                <ComboBox Grid.Column="1" 
+                          ItemsSource="{Binding ReportTypes}"
+                          SelectedItem="{Binding SelectedReportType}"
+                          Style="{StaticResource MacComboBoxStyle}" Width="200"/>
+
+                <TextBlock Grid.Column="2" Text="Từ:" VerticalAlignment="Center" 
+                           Style="{StaticResource SecondaryBodyStyle}" Margin="16,0,8,0"/>
+                <DatePicker Grid.Column="3" SelectedDate="{Binding FromDate}"
+                            Style="{StaticResource MacDatePickerStyle}" Width="130"/>
+
+                <TextBlock Grid.Column="4" Text="Đến:" VerticalAlignment="Center" 
+                           Style="{StaticResource SecondaryBodyStyle}" Margin="16,0,8,0"
+                           HorizontalAlignment="Left"/>
+
+                <DatePicker Grid.Column="5" SelectedDate="{Binding ToDate}"
+                            Style="{StaticResource MacDatePickerStyle}" Width="130" Margin="0,0,12,0"/>
+
+                <Button Grid.Column="6" Content="Xuất báo cáo" 
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Command="{Binding GenerateReportCommand}"/>
+            </Grid>
+        </Border>
+
+        <!-- Report Content -->
+        <Border Grid.Row="1" Style="{StaticResource CardStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Report Header -->
+                <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,20">
+                    <TextBlock Text="CỬA HÀNG ÁO THUN V-CLOTHES" 
+                               FontFamily="{StaticResource SFProFont}"
+                               FontSize="16" FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource PrimaryTextBrush}"/>
+                    <TextBlock Text="Địa chỉ: 123 Đường ABC, Quận XYZ, TP.HCM" 
+                               Style="{StaticResource CaptionStyle}"
+                               HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                    <TextBlock Text="ĐT: 0123.456.789 - Email: info@vclothes.vn" 
+                               Style="{StaticResource CaptionStyle}"
+                               HorizontalAlignment="Center" Margin="0,2,0,0"/>
+
+                    <Separator Style="{StaticResource SeparatorStyle}" Margin="0,12"/>
+
+                    <TextBlock Text="{Binding ReportTitle}" 
+                               FontFamily="{StaticResource SFProFont}"
+                               FontSize="20" FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource AccentBlueBrush}"/>
+                    <TextBlock Text="{Binding ReportDateRange}" 
+                               Style="{StaticResource SecondaryBodyStyle}"
+                               HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <!-- Summary Section -->
+                <Border Grid.Row="1" Background="{StaticResource HoverBackgroundBrush}" 
+                        CornerRadius="8" Padding="16" Margin="0,0,0,16"
+                        Visibility="{Binding HasSummary, Converter={StaticResource BoolToVisibility}}">
+                    <UniformGrid Columns="3">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="Tổng số lượng" Style="{StaticResource CaptionStyle}" 
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding SummaryCount}" 
+                                       FontFamily="{StaticResource SFProFont}"
+                                       FontSize="18" FontWeight="Bold"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="Tổng doanh thu" Style="{StaticResource CaptionStyle}" 
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding SummaryRevenue, Converter={StaticResource CurrencyConverter}}" 
+                                       FontFamily="{StaticResource SFProFont}"
+                                       FontSize="18" FontWeight="Bold"
+                                       Foreground="{StaticResource AccentGreenBrush}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="Lợi nhuận" Style="{StaticResource CaptionStyle}" 
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding SummaryProfit, Converter={StaticResource CurrencyConverter}}" 
+                                       FontFamily="{StaticResource SFProFont}"
+                                       FontSize="18" FontWeight="Bold"
+                                       Foreground="{StaticResource AccentBlueBrush}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </UniformGrid>
+                </Border>
+
+                <!-- Report Data Table -->
+                <DataGrid Grid.Row="2" 
+                          ItemsSource="{Binding ReportData}"
+                          Style="{StaticResource MacDataGridStyle}"
+                          ColumnHeaderStyle="{StaticResource MacDataGridColumnHeaderStyle}"
+                          CellStyle="{StaticResource MacDataGridCellStyle}"
+                          RowStyle="{StaticResource MacDataGridRowStyle}"
+                          AutoGenerateColumns="True"/>
+
+                <!-- Report Footer -->
+                <Grid Grid.Row="3" Margin="0,16,0,0">
+                    <TextBlock Text="{Binding ReportGeneratedDate}" 
+                               Style="{StaticResource CaptionStyle}"/>
+                    <TextBlock Text="Người lập báo cáo: _______________" 
+                               Style="{StaticResource CaptionStyle}"
+                               HorizontalAlignment="Right"/>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

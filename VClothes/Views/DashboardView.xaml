@@ -1,0 +1,188 @@
+<UserControl x:Class="VClothes.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:VClothes.Converters">
+
+    <UserControl.Resources>
+        <converters:CurrencyConverter x:Key="CurrencyConverter"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel>
+            <!-- Stats Cards Row 1 -->
+            <UniformGrid Columns="4" Margin="0,0,0,16">
+                <!-- Total Products -->
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,8,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <TextBlock Text="Sản phẩm" Style="{StaticResource SecondaryBodyStyle}"/>
+                            <Border HorizontalAlignment="Right" Width="32" Height="32" 
+                                    CornerRadius="8" Background="#EBF5FF">
+                                <TextBlock Text="👕" FontSize="16" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding TotalProducts}" 
+                                   FontFamily="{StaticResource SFProFont}"
+                                   FontSize="28" FontWeight="Bold"
+                                   Foreground="{StaticResource PrimaryTextBrush}"/>
+                        <TextBlock Text="sản phẩm đang kinh doanh" 
+                                   Style="{StaticResource CaptionStyle}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Total Categories -->
+                <Border Style="{StaticResource CardStyle}" Margin="8,0,8,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <TextBlock Text="Loại sản phẩm" Style="{StaticResource SecondaryBodyStyle}"/>
+                            <Border HorizontalAlignment="Right" Width="32" Height="32" 
+                                    CornerRadius="8" Background="#F0EBFF">
+                                <TextBlock Text="🏷️" FontSize="16" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding TotalCategories}" 
+                                   FontFamily="{StaticResource SFProFont}"
+                                   FontSize="28" FontWeight="Bold"
+                                   Foreground="{StaticResource PrimaryTextBrush}"/>
+                        <TextBlock Text="danh mục hoạt động" 
+                                   Style="{StaticResource CaptionStyle}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Total Employees -->
+                <Border Style="{StaticResource CardStyle}" Margin="8,0,8,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <TextBlock Text="Nhân viên" Style="{StaticResource SecondaryBodyStyle}"/>
+                            <Border HorizontalAlignment="Right" Width="32" Height="32" 
+                                    CornerRadius="8" Background="#EBFFF0">
+                                <TextBlock Text="👤" FontSize="16" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding TotalEmployees}" 
+                                   FontFamily="{StaticResource SFProFont}"
+                                   FontSize="28" FontWeight="Bold"
+                                   Foreground="{StaticResource PrimaryTextBrush}"/>
+                        <TextBlock Text="nhân viên đang làm việc" 
+                                   Style="{StaticResource CaptionStyle}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Total Customers -->
+                <Border Style="{StaticResource CardStyle}" Margin="8,0,0,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <TextBlock Text="Khách hàng" Style="{StaticResource SecondaryBodyStyle}"/>
+                            <Border HorizontalAlignment="Right" Width="32" Height="32" 
+                                    CornerRadius="8" Background="#FFF5EB">
+                                <TextBlock Text="🧑‍🤝‍🧑" FontSize="16" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding TotalCustomers}" 
+                                   FontFamily="{StaticResource SFProFont}"
+                                   FontSize="28" FontWeight="Bold"
+                                   Foreground="{StaticResource PrimaryTextBrush}"/>
+                        <TextBlock Text="khách hàng" 
+                                   Style="{StaticResource CaptionStyle}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Stats Cards Row 2 -->
+            <UniformGrid Columns="4" Margin="0,0,0,16">
+                <!-- Today Revenue -->
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,8,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <TextBlock Text="Doanh thu hôm nay" Style="{StaticResource SecondaryBodyStyle}"/>
+                            <Border HorizontalAlignment="Right" Width="32" Height="32" 
+                                    CornerRadius="8" Background="#EBFFF5">
+                                <TextBlock Text="💰" FontSize="16" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding TodayRevenue, Converter={StaticResource CurrencyConverter}}" 
+                                   FontFamily="{StaticResource SFProFont}"
+                                   FontSize="22" FontWeight="Bold"
+                                   Foreground="{StaticResource AccentGreenBrush}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Today Orders -->
+                <Border Style="{StaticResource CardStyle}" Margin="8,0,8,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <TextBlock Text="Đơn hàng hôm nay" Style="{StaticResource SecondaryBodyStyle}"/>
+                            <Border HorizontalAlignment="Right" Width="32" Height="32" 
+                                    CornerRadius="8" Background="#EBF5FF">
+                                <TextBlock Text="🧾" FontSize="16" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding TodayOrders}" 
+                                   FontFamily="{StaticResource SFProFont}"
+                                   FontSize="28" FontWeight="Bold"
+                                   Foreground="{StaticResource AccentBlueBrush}"/>
+                        <TextBlock Text="đơn hàng" 
+                                   Style="{StaticResource CaptionStyle}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Low Stock -->
+                <Border Style="{StaticResource CardStyle}" Margin="8,0,8,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <TextBlock Text="Sắp hết hàng" Style="{StaticResource SecondaryBodyStyle}"/>
+                            <Border HorizontalAlignment="Right" Width="32" Height="32" 
+                                    CornerRadius="8" Background="#FFF0EB">
+                                <TextBlock Text="⚠️" FontSize="16" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding LowStockCount}" 
+                                   FontFamily="{StaticResource SFProFont}"
+                                   FontSize="28" FontWeight="Bold"
+                                   Foreground="{StaticResource AccentOrangeBrush}"/>
+                        <TextBlock Text="sản phẩm cần nhập thêm" 
+                                   Style="{StaticResource CaptionStyle}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Month Revenue -->
+                <Border Style="{StaticResource CardStyle}" Margin="8,0,0,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <TextBlock Text="Doanh thu tháng" Style="{StaticResource SecondaryBodyStyle}"/>
+                            <Border HorizontalAlignment="Right" Width="32" Height="32" 
+                                    CornerRadius="8" Background="#F5EBFF">
+                                <TextBlock Text="📈" FontSize="16" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding MonthRevenue, Converter={StaticResource CurrencyConverter}}" 
+                                   FontFamily="{StaticResource SFProFont}"
+                                   FontSize="22" FontWeight="Bold"
+                                   Foreground="{StaticResource AccentPurpleBrush}"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Welcome Card -->
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Text="Chào mừng đến với V-Clothes" 
+                               Style="{StaticResource Title3Style}" Margin="0,0,0,8"/>
+                    <TextBlock TextWrapping="Wrap" Style="{StaticResource SecondaryBodyStyle}">
+                        Hệ thống quản lý cửa hàng áo thun giúp bạn quản lý sản phẩm, 
+                        theo dõi doanh thu, và tối ưu hóa hoạt động kinh doanh. 
+                        Sử dụng menu bên trái để điều hướng đến các chức năng.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
