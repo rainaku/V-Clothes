@@ -67,7 +67,15 @@ public class ProductManagementViewModel : BaseViewModel
         DeleteCommand = new RelayCommand(_ => ExecuteDelete());
         CancelCommand = new RelayCommand(_ => ExecuteCancel());
         BrowseImageCommand = new RelayCommand(_ => ExecuteBrowseImage());
-        try { LoadData(); } catch { }
+        IsLoading = true;
+        LoadAsync();
+    }
+
+    private async void LoadAsync()
+    {
+        try { await Task.Run(() => LoadData()); }
+        catch { }
+        finally { IsLoading = false; }
     }
 
     private void LoadData()

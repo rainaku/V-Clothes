@@ -6,6 +6,14 @@ namespace VClothes.ViewModels;
 
 public abstract class BaseViewModel : INotifyPropertyChanged
 {
+    private bool _isLoading;
+
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set => SetProperty(ref _isLoading, value);
+    }
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

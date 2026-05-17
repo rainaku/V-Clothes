@@ -75,51 +75,43 @@ public class MainViewModel : BaseViewModel
         LogoutCommand = new RelayCommand(ExecuteLogout);
     }
 
-    private async void ExecuteNavigate(object? parameter)
+    private void ExecuteNavigate(object? parameter)
     {
         var viewName = parameter?.ToString();
         if (string.IsNullOrEmpty(viewName)) return;
 
         SelectedMenuItem = viewName;
 
+        CurrentViewTitle = viewName switch
+        {
+            "Dashboard" => "Tổng quan",
+            "Categories" => "Quản lý loại sản phẩm",
+            "Suppliers" => "Quản lý nhà cung cấp",
+            "Products" => "Quản lý sản phẩm",
+            "Employees" => "Quản lý nhân viên",
+            "PurchaseInvoices" => "Phiếu nhập hàng",
+            "SalesInvoices" => "Hóa đơn bán hàng",
+            "Revenue" => "Thống kê doanh thu",
+            "Reports" => "Báo cáo",
+            _ => CurrentViewTitle
+        };
+
         try
         {
-            BaseViewModel? vm = null;
-
-            await Task.Run(() =>
+            BaseViewModel vm = viewName switch
             {
-                vm = viewName switch
-                {
-                    "Dashboard" => new DashboardViewModel(),
-                    "Categories" => new CategoryManagementViewModel(),
-                    "Suppliers" => new SupplierManagementViewModel(),
-                    "Products" => new ProductManagementViewModel(),
-                    "Employees" => new EmployeeManagementViewModel(),
-                    "PurchaseInvoices" => new PurchaseInvoiceViewModel(),
-                    "SalesInvoices" => new SalesInvoiceViewModel(),
-                    "Revenue" => new RevenueStatisticsViewModel(),
-                    "Reports" => new ReportViewModel(),
-                    _ => null
-                };
-            });
-
-            if (vm != null)
-            {
-                CurrentViewModel = vm;
-                CurrentViewTitle = viewName switch
-                {
-                    "Dashboard" => "Tổng quan",
-                    "Categories" => "Quản lý loại sản phẩm",
-                    "Suppliers" => "Quản lý nhà cung cấp",
-                    "Products" => "Quản lý sản phẩm",
-                    "Employees" => "Quản lý nhân viên",
-                    "PurchaseInvoices" => "Phiếu nhập hàng",
-                    "SalesInvoices" => "Hóa đơn bán hàng",
-                    "Revenue" => "Thống kê doanh thu",
-                    "Reports" => "Báo cáo",
-                    _ => CurrentViewTitle
-                };
-            }
+                "Dashboard" => new DashboardViewModel(),
+                "Categories" => new CategoryManagementViewModel(),
+                "Suppliers" => new SupplierManagementViewModel(),
+                "Products" => new ProductManagementViewModel(),
+                "Employees" => new EmployeeManagementViewModel(),
+                "PurchaseInvoices" => new PurchaseInvoiceViewModel(),
+                "SalesInvoices" => new SalesInvoiceViewModel(),
+                "Revenue" => new RevenueStatisticsViewModel(),
+                "Reports" => new ReportViewModel(),
+                _ => _currentViewModel
+            };
+            CurrentViewModel = vm;
         }
         catch (Exception)
         {

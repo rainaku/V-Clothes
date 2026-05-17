@@ -44,10 +44,19 @@ public class ReportViewModel : BaseViewModel
 
     public ReportViewModel()
     {
-        GenerateReportCommand = new RelayCommand(_ => GenerateReport());
+        GenerateReportCommand = new RelayCommand(_ => GenerateReportAsync());
         ReportDateRange = $"Từ {FromDate:dd/MM/yyyy} đến {ToDate:dd/MM/yyyy}";
         ReportGeneratedDate = $"Ngày xuất: {DateTime.Now:dd/MM/yyyy HH:mm}";
-        try { GenerateReport(); } catch { }
+        IsLoading = true;
+        GenerateReportAsync();
+    }
+
+    private async void GenerateReportAsync()
+    {
+        IsLoading = true;
+        try { await Task.Run(() => GenerateReport()); }
+        catch { }
+        finally { IsLoading = false; }
     }
 
     private void GenerateReport()

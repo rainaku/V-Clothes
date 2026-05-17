@@ -37,8 +37,17 @@ public class RevenueStatisticsViewModel : BaseViewModel
 
     public RevenueStatisticsViewModel()
     {
-        FilterCommand = new RelayCommand(_ => LoadStatistics());
-        try { LoadStatistics(); } catch { }
+        FilterCommand = new RelayCommand(_ => LoadStatisticsAsync());
+        IsLoading = true;
+        LoadStatisticsAsync();
+    }
+
+    private async void LoadStatisticsAsync()
+    {
+        IsLoading = true;
+        try { await Task.Run(() => LoadStatistics()); }
+        catch { }
+        finally { IsLoading = false; }
     }
 
     private void LoadStatistics()

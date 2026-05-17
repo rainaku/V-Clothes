@@ -24,7 +24,18 @@ public class DashboardViewModel : BaseViewModel
 
     public DashboardViewModel()
     {
-        LoadDashboardData();
+        IsLoading = true;
+        LoadDashboardDataAsync();
+    }
+
+    private async void LoadDashboardDataAsync()
+    {
+        try
+        {
+            await Task.Run(() => LoadDashboardData());
+        }
+        catch { }
+        finally { IsLoading = false; }
     }
 
     private void LoadDashboardData()

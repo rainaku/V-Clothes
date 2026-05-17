@@ -50,7 +50,15 @@ public class EmployeeManagementViewModel : BaseViewModel
         SaveCommand = new RelayCommand(_ => ExecuteSave());
         DeleteCommand = new RelayCommand(_ => ExecuteDelete());
         CancelCommand = new RelayCommand(_ => ExecuteCancel());
-        try { Load(); } catch { }
+        IsLoading = true;
+        LoadAsync();
+    }
+
+    private async void LoadAsync()
+    {
+        try { await Task.Run(() => Load()); }
+        catch { }
+        finally { IsLoading = false; }
     }
 
     private void Load()

@@ -25,7 +25,13 @@
             <TextBox Grid.Row="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      Style="{StaticResource SearchTextBoxStyle}" Margin="0,0,0,12"/>
 
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <!-- Skeleton Loading -->
+            <views:SkeletonLoading Grid.Row="2"
+                                   Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"
+                                   xmlns:views="clr-namespace:VClothes.Views"/>
+
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto"
+                          Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
                 <ItemsControl ItemsSource="{Binding Suppliers}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

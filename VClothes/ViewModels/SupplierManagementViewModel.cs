@@ -59,7 +59,15 @@ public class SupplierManagementViewModel : BaseViewModel
         SaveCommand = new RelayCommand(_ => ExecuteSave());
         DeleteCommand = new RelayCommand(_ => ExecuteDelete());
         CancelCommand = new RelayCommand(_ => ExecuteCancel());
-        try { LoadSuppliers(); } catch { }
+        IsLoading = true;
+        LoadAsync();
+    }
+
+    private async void LoadAsync()
+    {
+        try { await Task.Run(() => LoadSuppliers()); }
+        catch { }
+        finally { IsLoading = false; }
     }
 
     private void LoadSuppliers()

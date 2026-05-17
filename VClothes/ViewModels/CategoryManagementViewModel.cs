@@ -52,7 +52,15 @@ public class CategoryManagementViewModel : BaseViewModel
         DeleteCommand = new RelayCommand(_ => ExecuteDelete());
         CancelCommand = new RelayCommand(_ => ExecuteCancel());
         SearchCommand = new RelayCommand(_ => SearchCategories());
-        try { LoadCategories(); } catch { }
+        IsLoading = true;
+        LoadAsync();
+    }
+
+    private async void LoadAsync()
+    {
+        try { await Task.Run(() => LoadCategories()); }
+        catch { }
+        finally { IsLoading = false; }
     }
 
     private void LoadCategories()

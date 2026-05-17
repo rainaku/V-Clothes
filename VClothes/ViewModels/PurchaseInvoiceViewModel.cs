@@ -66,7 +66,15 @@ public class PurchaseInvoiceViewModel : BaseViewModel
         SaveCommand = new RelayCommand(_ => ExecuteSave());
         CancelCommand = new RelayCommand(_ => { IsCreating = false; });
         AddDetailCommand = new RelayCommand(_ => ExecuteAddDetail());
-        try { LoadData(); } catch { }
+        IsLoading = true;
+        LoadAsync();
+    }
+
+    private async void LoadAsync()
+    {
+        try { await Task.Run(() => LoadData()); }
+        catch { }
+        finally { IsLoading = false; }
     }
 
     private void LoadData()

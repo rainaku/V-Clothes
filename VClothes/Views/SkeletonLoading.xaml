@@ -1,0 +1,34 @@
+<UserControl x:Class="VClothes.Views.SkeletonLoading"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <UserControl.Resources>
+        <Storyboard x:Key="PulseAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="skeleton1" Storyboard.TargetProperty="Opacity"
+                             From="0.3" To="0.7" Duration="0:0:0.8" AutoReverse="True"/>
+            <DoubleAnimation Storyboard.TargetName="skeleton2" Storyboard.TargetProperty="Opacity"
+                             From="0.3" To="0.7" Duration="0:0:0.8" AutoReverse="True" BeginTime="0:0:0.1"/>
+            <DoubleAnimation Storyboard.TargetName="skeleton3" Storyboard.TargetProperty="Opacity"
+                             From="0.3" To="0.7" Duration="0:0:0.8" AutoReverse="True" BeginTime="0:0:0.2"/>
+            <DoubleAnimation Storyboard.TargetName="skeleton4" Storyboard.TargetProperty="Opacity"
+                             From="0.3" To="0.7" Duration="0:0:0.8" AutoReverse="True" BeginTime="0:0:0.3"/>
+            <DoubleAnimation Storyboard.TargetName="skeleton5" Storyboard.TargetProperty="Opacity"
+                             From="0.3" To="0.7" Duration="0:0:0.8" AutoReverse="True" BeginTime="0:0:0.4"/>
+        </Storyboard>
+    </UserControl.Resources>
+
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard Storyboard="{StaticResource PulseAnimation}"/>
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <StackPanel Margin="0,8">
+        <!-- Skeleton rows mimicking list items -->
+        <Border x:Name="skeleton1" CornerRadius="8" Background="#E8E8ED" Height="48" Margin="0,0,0,6" Opacity="0.5"/>
+        <Border x:Name="skeleton2" CornerRadius="8" Background="#E8E8ED" Height="48" Margin="0,0,0,6" Opacity="0.5"/>
+        <Border x:Name="skeleton3" CornerRadius="8" Background="#E8E8ED" Height="48" Margin="0,0,0,6" Opacity="0.5"/>
+        <Border x:Name="skeleton4" CornerRadius="8" Background="#E8E8ED" Height="48" Margin="0,0,0,6" Opacity="0.5"/>
+        <Border x:Name="skeleton5" CornerRadius="8" Background="#E8E8ED" Height="48" Margin="0,0,0,6" Opacity="0.5"/>
+    </StackPanel>
+</UserControl>
