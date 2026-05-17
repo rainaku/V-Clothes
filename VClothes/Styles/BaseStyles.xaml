@@ -1,9 +1,9 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Font Family - SF Pro (fallback to Segoe UI) -->
-    <FontFamily x:Key="SFProFont">SF Pro Display, SF Pro Text, Segoe UI, Arial</FontFamily>
-    <FontFamily x:Key="SFProRoundedFont">SF Pro Rounded, SF Pro Display, Segoe UI, Arial</FontFamily>
+    <!-- Font Family - SF Pro embedded (all weights in one family) -->
+    <FontFamily x:Key="SFProFont">/Fonts/#SF Pro Display</FontFamily>
+    <FontFamily x:Key="SFProRoundedFont">/Fonts/#SF Pro Display</FontFamily>
 
     <!-- Font Sizes -->
     <sys:Double x:Key="FontSizeCaption" xmlns:sys="clr-namespace:System;assembly=mscorlib">11</sys:Double>

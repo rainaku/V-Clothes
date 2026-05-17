@@ -24,4 +24,9 @@
     <Resource Include="Styles\C6D811AD-D785-4611-91CE-3AA6E721CB89.webp" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Fonts\**" />
+    <Resource Include="Fonts\**" />
+  </ItemGroup>
+
 </Project>
