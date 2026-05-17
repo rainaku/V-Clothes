@@ -18,6 +18,8 @@ public class SalesInvoiceViewModel : BaseViewModel
     private string _validationMessage = string.Empty;
     private DateTime? _filterFromDate;
     private DateTime? _filterToDate;
+    private string _sortColumn = "invoice_date";
+    private bool _sortAscending = false;
 
     private string _editInvoiceCode = string.Empty;
     private DateTime _editInvoiceDate = DateTime.Now;
@@ -42,6 +44,8 @@ public class SalesInvoiceViewModel : BaseViewModel
     public string ValidationMessage { get => _validationMessage; set => SetProperty(ref _validationMessage, value); }
     public DateTime? FilterFromDate { get => _filterFromDate; set { if (SetProperty(ref _filterFromDate, value)) SearchInvoices(); } }
     public DateTime? FilterToDate { get => _filterToDate; set { if (SetProperty(ref _filterToDate, value)) SearchInvoices(); } }
+    public string SortColumn { get => _sortColumn; set => SetProperty(ref _sortColumn, value); }
+    public bool SortAscending { get => _sortAscending; set => SetProperty(ref _sortAscending, value); }
 
     public string EditInvoiceCode { get => _editInvoiceCode; set => SetProperty(ref _editInvoiceCode, value); }
     public DateTime EditInvoiceDate { get => _editInvoiceDate; set => SetProperty(ref _editInvoiceDate, value); }
@@ -60,6 +64,7 @@ public class SalesInvoiceViewModel : BaseViewModel
     public ICommand AddDetailCommand { get; }
     public ICommand ViewDetailCommand { get; }
     public ICommand CloseDetailCommand { get; }
+    public ICommand SortCommand { get; }
 
     public SalesInvoiceViewModel()
     {
@@ -69,6 +74,7 @@ public class SalesInvoiceViewModel : BaseViewModel
         AddDetailCommand = new RelayCommand(_ => ExecuteAddDetail());
         ViewDetailCommand = new RelayCommand(ExecuteViewDetail);
         CloseDetailCommand = new RelayCommand(_ => { IsViewingDetail = false; SelectedInvoice = null; });
+        SortCommand = new RelayCommand(ExecuteSort);
         IsLoading = true;
         LoadAsync();
     }
@@ -82,8 +88,9 @@ public class SalesInvoiceViewModel : BaseViewModel
 
     private void LoadData()
     {
+        var order = $"order={SortColumn}.{(SortAscending ? "asc" : "desc")}";
         Invoices = new ObservableCollection<SalesInvoiceDto>(
-            SupabaseClient.Get<SalesInvoiceDto>("sales_invoices", "select=*,customers(*)&order=invoice_date.desc"));
+            SupabaseClient.Get<SalesInvoiceDto>("sales_invoices", $"select=*,customers(*)&{order}"));
         Customers = new ObservableCollection<CustomerDto>(
             SupabaseClient.Get<CustomerDto>("customers", "order=full_name.asc"));
         Products = new ObservableCollection<ProductDto>(
@@ -94,7 +101,8 @@ public class SalesInvoiceViewModel : BaseViewModel
     {
         try
         {
-            var filters = new List<string> { "select=*,customers(*)", "order=invoice_date.desc" };
+            var order = $"order={SortColumn}.{(SortAscending ? "asc" : "desc")}";
+            var filters = new List<string> { "select=*,customers(*)", order };
             if (!string.IsNullOrWhiteSpace(SearchText))
                 filters.Add($"invoice_code=ilike.%25{Uri.EscapeDataString(SearchText)}%25");
             if (FilterFromDate.HasValue)
@@ -105,6 +113,20 @@ public class SalesInvoiceViewModel : BaseViewModel
                 SupabaseClient.Get<SalesInvoiceDto>("sales_invoices", string.Join("&", filters)));
         }
         catch { }
+    }
+
+    private void ExecuteSort(object? parameter)
+    {
+        var column = parameter?.ToString();
+        if (string.IsNullOrEmpty(column)) return;
+        if (SortColumn == column)
+            SortAscending = !SortAscending;
+        else
+        {
+            SortColumn = column;
+            SortAscending = column == "invoice_date" ? false : true;
+        }
+        SearchInvoices();
     }
 
     private void CalculateFinal() { FinalAmount = Math.Max(0, TotalAmount - EditDiscount); }

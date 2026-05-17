@@ -18,8 +18,12 @@ public class SupplierManagementViewModel : BaseViewModel
     private bool _editIsActive = true;
     private bool _isEditing;
     private string _validationMessage = string.Empty;
+    private string _sortColumn = "name";
+    private bool _sortAscending = true;
 
     public ObservableCollection<SupplierDto> Suppliers { get => _suppliers; set => SetProperty(ref _suppliers, value); }
+    public string SortColumn { get => _sortColumn; set => SetProperty(ref _sortColumn, value); }
+    public bool SortAscending { get => _sortAscending; set => SetProperty(ref _sortAscending, value); }
     public SupplierDto? SelectedSupplier
     {
         get => _selectedSupplier;
@@ -52,6 +56,7 @@ public class SupplierManagementViewModel : BaseViewModel
     public ICommand SaveCommand { get; }
     public ICommand DeleteCommand { get; }
     public ICommand CancelCommand { get; }
+    public ICommand SortCommand { get; }
 
     public SupplierManagementViewModel()
     {
@@ -59,6 +64,7 @@ public class SupplierManagementViewModel : BaseViewModel
         SaveCommand = new RelayCommand(_ => ExecuteSave());
         DeleteCommand = new RelayCommand(_ => ExecuteDelete());
         CancelCommand = new RelayCommand(_ => ExecuteCancel());
+        SortCommand = new RelayCommand(ExecuteSort);
         IsLoading = true;
         LoadAsync();
     }
@@ -72,7 +78,8 @@ public class SupplierManagementViewModel : BaseViewModel
 
     private void LoadSuppliers()
     {
-        var suppliers = SupabaseClient.Get<SupplierDto>("suppliers", "order=name.asc");
+        var order = $"order={SortColumn}.{(SortAscending ? "asc" : "desc")}";
+        var suppliers = SupabaseClient.Get<SupplierDto>("suppliers", order);
         Suppliers = new ObservableCollection<SupplierDto>(suppliers);
     }
 
@@ -80,9 +87,10 @@ public class SupplierManagementViewModel : BaseViewModel
     {
         try
         {
-            var query = "order=name.asc";
+            var order = $"order={SortColumn}.{(SortAscending ? "asc" : "desc")}";
+            var query = order;
             if (!string.IsNullOrWhiteSpace(SearchText))
-                query = $"or=(name.ilike.%25{Uri.EscapeDataString(SearchText)}%25,phone.ilike.%25{Uri.EscapeDataString(SearchText)}%25,email.ilike.%25{Uri.EscapeDataString(SearchText)}%25)&order=name.asc";
+                query = $"or=(name.ilike.%25{Uri.EscapeDataString(SearchText)}%25,phone.ilike.%25{Uri.EscapeDataString(SearchText)}%25,email.ilike.%25{Uri.EscapeDataString(SearchText)}%25)&{order}";
 
             var suppliers = SupabaseClient.Get<SupplierDto>("suppliers", query);
             Suppliers = new ObservableCollection<SupplierDto>(suppliers);
@@ -93,6 +101,20 @@ public class SupplierManagementViewModel : BaseViewModel
                 ValidationMessage = string.Empty;
         }
         catch { }
+    }
+
+    private void ExecuteSort(object? parameter)
+    {
+        var column = parameter?.ToString();
+        if (string.IsNullOrEmpty(column)) return;
+        if (SortColumn == column)
+            SortAscending = !SortAscending;
+        else
+        {
+            SortColumn = column;
+            SortAscending = true;
+        }
+        SearchSuppliers();
     }
 
     private void ExecuteAdd()

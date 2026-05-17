@@ -12,6 +12,8 @@ public class EmployeeManagementViewModel : BaseViewModel
     private string _searchText = string.Empty;
     private bool _isEditing;
     private string _validationMessage = string.Empty;
+    private string _sortColumn = "employee_code";
+    private bool _sortAscending = true;
 
     private string _editEmployeeCode = string.Empty;
     private string _editFullName = string.Empty;
@@ -24,6 +26,8 @@ public class EmployeeManagementViewModel : BaseViewModel
     private bool _editIsActive = true;
 
     public ObservableCollection<EmployeeDto> Employees { get => _employees; set => SetProperty(ref _employees, value); }
+    public string SortColumn { get => _sortColumn; set => SetProperty(ref _sortColumn, value); }
+    public bool SortAscending { get => _sortAscending; set => SetProperty(ref _sortAscending, value); }
     public EmployeeDto? SelectedEmployee { get => _selectedEmployee; set { if (SetProperty(ref _selectedEmployee, value) && value != null) LoadForEdit(value); } }
     public string SearchText { get => _searchText; set { if (SetProperty(ref _searchText, value)) Search(); } }
     public bool IsEditing { get => _isEditing; set => SetProperty(ref _isEditing, value); }
@@ -43,6 +47,7 @@ public class EmployeeManagementViewModel : BaseViewModel
     public ICommand SaveCommand { get; }
     public ICommand DeleteCommand { get; }
     public ICommand CancelCommand { get; }
+    public ICommand SortCommand { get; }
 
     public EmployeeManagementViewModel()
     {
@@ -50,6 +55,7 @@ public class EmployeeManagementViewModel : BaseViewModel
         SaveCommand = new RelayCommand(_ => ExecuteSave());
         DeleteCommand = new RelayCommand(_ => ExecuteDelete());
         CancelCommand = new RelayCommand(_ => ExecuteCancel());
+        SortCommand = new RelayCommand(ExecuteSort);
         IsLoading = true;
         LoadAsync();
     }
@@ -63,7 +69,8 @@ public class EmployeeManagementViewModel : BaseViewModel
 
     private void Load()
     {
-        var employees = SupabaseClient.Get<EmployeeDto>("employees", "order=employee_code.asc");
+        var order = $"order={SortColumn}.{(SortAscending ? "asc" : "desc")}";
+        var employees = SupabaseClient.Get<EmployeeDto>("employees", order);
         Employees = new ObservableCollection<EmployeeDto>(employees);
     }
 
@@ -71,12 +78,27 @@ public class EmployeeManagementViewModel : BaseViewModel
     {
         try
         {
-            var query = "order=employee_code.asc";
+            var order = $"order={SortColumn}.{(SortAscending ? "asc" : "desc")}";
+            var query = order;
             if (!string.IsNullOrWhiteSpace(SearchText))
-                query = $"or=(full_name.ilike.%25{Uri.EscapeDataString(SearchText)}%25,employee_code.ilike.%25{Uri.EscapeDataString(SearchText)}%25,phone.ilike.%25{Uri.EscapeDataString(SearchText)}%25)&order=employee_code.asc";
+                query = $"or=(full_name.ilike.%25{Uri.EscapeDataString(SearchText)}%25,employee_code.ilike.%25{Uri.EscapeDataString(SearchText)}%25,phone.ilike.%25{Uri.EscapeDataString(SearchText)}%25)&{order}";
             Employees = new ObservableCollection<EmployeeDto>(SupabaseClient.Get<EmployeeDto>("employees", query));
         }
         catch { }
+    }
+
+    private void ExecuteSort(object? parameter)
+    {
+        var column = parameter?.ToString();
+        if (string.IsNullOrEmpty(column)) return;
+        if (SortColumn == column)
+            SortAscending = !SortAscending;
+        else
+        {
+            SortColumn = column;
+            SortAscending = true;
+        }
+        Search();
     }
 
     private void LoadForEdit(EmployeeDto e)

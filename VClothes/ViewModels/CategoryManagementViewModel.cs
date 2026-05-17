@@ -15,8 +15,12 @@ public class CategoryManagementViewModel : BaseViewModel
     private bool _editIsActive = true;
     private bool _isEditing;
     private string _validationMessage = string.Empty;
+    private string _sortColumn = "name";
+    private bool _sortAscending = true;
 
     public ObservableCollection<CategoryDto> Categories { get => _categories; set => SetProperty(ref _categories, value); }
+    public string SortColumn { get => _sortColumn; set => SetProperty(ref _sortColumn, value); }
+    public bool SortAscending { get => _sortAscending; set => SetProperty(ref _sortAscending, value); }
     public CategoryDto? SelectedCategory
     {
         get => _selectedCategory;
@@ -44,6 +48,7 @@ public class CategoryManagementViewModel : BaseViewModel
     public ICommand DeleteCommand { get; }
     public ICommand CancelCommand { get; }
     public ICommand SearchCommand { get; }
+    public ICommand SortCommand { get; }
 
     public CategoryManagementViewModel()
     {
@@ -52,6 +57,7 @@ public class CategoryManagementViewModel : BaseViewModel
         DeleteCommand = new RelayCommand(_ => ExecuteDelete());
         CancelCommand = new RelayCommand(_ => ExecuteCancel());
         SearchCommand = new RelayCommand(_ => SearchCategories());
+        SortCommand = new RelayCommand(ExecuteSort);
         IsLoading = true;
         LoadAsync();
     }
@@ -65,7 +71,8 @@ public class CategoryManagementViewModel : BaseViewModel
 
     private void LoadCategories()
     {
-        var categories = SupabaseClient.Get<CategoryDto>("categories", "order=name.asc");
+        var order = $"order={SortColumn}.{(SortAscending ? "asc" : "desc")}";
+        var categories = SupabaseClient.Get<CategoryDto>("categories", order);
         Categories = new ObservableCollection<CategoryDto>(categories);
     }
 
@@ -73,9 +80,10 @@ public class CategoryManagementViewModel : BaseViewModel
     {
         try
         {
-            var query = "order=name.asc";
+            var order = $"order={SortColumn}.{(SortAscending ? "asc" : "desc")}";
+            var query = order;
             if (!string.IsNullOrWhiteSpace(SearchText))
-                query = $"or=(name.ilike.%25{Uri.EscapeDataString(SearchText)}%25,description.ilike.%25{Uri.EscapeDataString(SearchText)}%25)&order=name.asc";
+                query = $"or=(name.ilike.%25{Uri.EscapeDataString(SearchText)}%25,description.ilike.%25{Uri.EscapeDataString(SearchText)}%25)&{order}";
 
             var categories = SupabaseClient.Get<CategoryDto>("categories", query);
             Categories = new ObservableCollection<CategoryDto>(categories);
@@ -86,6 +94,20 @@ public class CategoryManagementViewModel : BaseViewModel
                 ValidationMessage = string.Empty;
         }
         catch { }
+    }
+
+    private void ExecuteSort(object? parameter)
+    {
+        var column = parameter?.ToString();
+        if (string.IsNullOrEmpty(column)) return;
+        if (SortColumn == column)
+            SortAscending = !SortAscending;
+        else
+        {
+            SortColumn = column;
+            SortAscending = true;
+        }
+        SearchCategories();
     }
 
     private void ExecuteAdd()

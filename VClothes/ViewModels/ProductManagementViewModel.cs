@@ -17,6 +17,8 @@ public class ProductManagementViewModel : BaseViewModel
     private string _searchText = string.Empty;
     private bool _isEditing;
     private string _validationMessage = string.Empty;
+    private string _sortColumn = "name";
+    private bool _sortAscending = true;
 
     private string _editProductCode = string.Empty;
     private string _editName = string.Empty;
@@ -40,6 +42,8 @@ public class ProductManagementViewModel : BaseViewModel
     public string SearchText { get => _searchText; set { if (SetProperty(ref _searchText, value)) SearchProducts(); } }
     public bool IsEditing { get => _isEditing; set => SetProperty(ref _isEditing, value); }
     public string ValidationMessage { get => _validationMessage; set => SetProperty(ref _validationMessage, value); }
+    public string SortColumn { get => _sortColumn; set => SetProperty(ref _sortColumn, value); }
+    public bool SortAscending { get => _sortAscending; set => SetProperty(ref _sortAscending, value); }
 
     public string EditProductCode { get => _editProductCode; set => SetProperty(ref _editProductCode, value); }
     public string EditName { get => _editName; set => SetProperty(ref _editName, value); }
@@ -59,6 +63,7 @@ public class ProductManagementViewModel : BaseViewModel
     public ICommand DeleteCommand { get; }
     public ICommand CancelCommand { get; }
     public ICommand BrowseImageCommand { get; }
+    public ICommand SortCommand { get; }
 
     public ProductManagementViewModel()
     {
@@ -67,6 +72,7 @@ public class ProductManagementViewModel : BaseViewModel
         DeleteCommand = new RelayCommand(_ => ExecuteDelete());
         CancelCommand = new RelayCommand(_ => ExecuteCancel());
         BrowseImageCommand = new RelayCommand(_ => ExecuteBrowseImage());
+        SortCommand = new RelayCommand(ExecuteSort);
         IsLoading = true;
         LoadAsync();
     }
@@ -80,7 +86,8 @@ public class ProductManagementViewModel : BaseViewModel
 
     private void LoadData()
     {
-        var products = SupabaseClient.Get<ProductDto>("products", "select=*,categories(*),suppliers(*)&order=name.asc");
+        var order = $"order={SortColumn}.{(SortAscending ? "asc" : "desc")}";
+        var products = SupabaseClient.Get<ProductDto>("products", $"select=*,categories(*),suppliers(*)&{order}");
         Products = new ObservableCollection<ProductDto>(products);
 
         var categories = SupabaseClient.Get<CategoryDto>("categories", "is_active=eq.true&order=name.asc");
@@ -95,7 +102,8 @@ public class ProductManagementViewModel : BaseViewModel
     {
         try
         {
-            var filters = new List<string> { "select=*,categories(*),suppliers(*)", "order=name.asc" };
+            var order = $"order={SortColumn}.{(SortAscending ? "asc" : "desc")}";
+            var filters = new List<string> { "select=*,categories(*),suppliers(*)", order };
 
             if (!string.IsNullOrWhiteSpace(SearchText))
                 filters.Add($"or=(name.ilike.%25{Uri.EscapeDataString(SearchText)}%25,product_code.ilike.%25{Uri.EscapeDataString(SearchText)}%25)");
@@ -106,6 +114,20 @@ public class ProductManagementViewModel : BaseViewModel
             Products = new ObservableCollection<ProductDto>(products);
         }
         catch { }
+    }
+
+    private void ExecuteSort(object? parameter)
+    {
+        var column = parameter?.ToString();
+        if (string.IsNullOrEmpty(column)) return;
+        if (SortColumn == column)
+            SortAscending = !SortAscending;
+        else
+        {
+            SortColumn = column;
+            SortAscending = true;
+        }
+        SearchProducts();
     }
 
     private void LoadProductForEdit(ProductDto product)
