@@ -53,7 +53,7 @@
                         <DataTemplate>
                             <Border Margin="0,0,0,4" CornerRadius="8" Background="White"
                                     BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                    Cursor="Hand">
+                                    Cursor="Hand" MouseLeftButtonDown="Item_Click">
                                 <Grid Margin="16,12">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="90"/>
@@ -79,6 +79,94 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
+
+            <!-- Detail View Panel -->
+            <Border Grid.Row="2" VerticalAlignment="Bottom"
+                    Visibility="{Binding IsViewingDetail, Converter={StaticResource BoolToVisibility}}"
+                    Background="White" CornerRadius="12" Padding="20" Margin="0,8,0,0"
+                    BorderBrush="{StaticResource AccentGreenBrush}" BorderThickness="1">
+                <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsViewingDetail}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.25"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" From="15" To="0" Duration="0:0:0.25">
+                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.1" Color="#000000"/>
+                </Border.Effect>
+
+                <StackPanel>
+                    <Grid Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Chi tiết hóa đơn: " Style="{StaticResource HeadlineStyle}"/>
+                            <TextBlock Text="{Binding SelectedInvoice.InvoiceCode}" Style="{StaticResource HeadlineStyle}"
+                                       Foreground="{StaticResource AccentGreenBrush}"/>
+                        </StackPanel>
+                        <Button Content="✕" Style="{StaticResource IconButtonStyle}" HorizontalAlignment="Right"
+                                Command="{Binding CloseDetailCommand}" Width="28" Height="28"/>
+                    </Grid>
+
+                    <ItemsControl ItemsSource="{Binding SelectedInvoiceDetails}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,3" CornerRadius="6" Background="#F9FAFB" Padding="12,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="110"/>
+                                            <ColumnDefinition Width="120"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding ProductName}" FontFamily="{StaticResource SFProFont}" FontSize="13" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Quantity, StringFormat='x{0}'}" FontFamily="{StaticResource SFProFont}" FontSize="12"
+                                                   Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding UnitPrice, Converter={StaticResource CurrencyConverter}}" FontFamily="{StaticResource SFProFont}" FontSize="12"
+                                                   Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="3" Text="{Binding Total, Converter={StaticResource CurrencyConverter}}" FontFamily="{StaticResource SFProFont}" FontSize="13"
+                                                   FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Border Background="{StaticResource HoverBackgroundBrush}" CornerRadius="8" Padding="12" Margin="0,8,0,0">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,4">
+                                <TextBlock Text="Tổng tiền hàng:" Style="{StaticResource SecondaryBodyStyle}"/>
+                                <TextBlock Text="{Binding SelectedInvoice.TotalAmount, Converter={StaticResource CurrencyConverter}}"
+                                           HorizontalAlignment="Right" FontFamily="{StaticResource SFProFont}"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,4">
+                                <TextBlock Text="Giảm giá:" Style="{StaticResource SecondaryBodyStyle}"/>
+                                <TextBlock Text="{Binding SelectedInvoice.Discount, Converter={StaticResource CurrencyConverter}}"
+                                           HorizontalAlignment="Right" FontFamily="{StaticResource SFProFont}" Foreground="{StaticResource AccentRedBrush}"/>
+                            </Grid>
+                            <Separator Style="{StaticResource SeparatorStyle}"/>
+                            <Grid>
+                                <TextBlock Text="THANH TOÁN" FontFamily="{StaticResource SFProFont}" FontSize="11"
+                                           FontWeight="SemiBold" Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding SelectedInvoice.FinalAmount, Converter={StaticResource CurrencyConverter}}"
+                                           FontFamily="{StaticResource SFProFont}" FontSize="18" FontWeight="Bold"
+                                           Foreground="{StaticResource AccentGreenBrush}" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
 
             <!-- Slide-up Create Panel -->
             <Border Grid.Row="2" VerticalAlignment="Bottom"

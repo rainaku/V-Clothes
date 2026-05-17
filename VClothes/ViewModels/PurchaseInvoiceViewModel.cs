@@ -19,7 +19,9 @@ public class PurchaseInvoiceViewModel : BaseViewModel
     private ObservableCollection<SupplierDto> _suppliers = new();
     private ObservableCollection<ProductDto> _products = new();
     private ObservableCollection<InvoiceDetailItem> _invoiceDetails = new();
+    private ObservableCollection<InvoiceDetailItem> _selectedInvoiceDetails = new();
     private PurchaseInvoiceDto? _selectedInvoice;
+    private bool _isViewingDetail;
     private string _searchText = string.Empty;
     private bool _isCreating;
     private string _validationMessage = string.Empty;
@@ -39,7 +41,9 @@ public class PurchaseInvoiceViewModel : BaseViewModel
     public ObservableCollection<SupplierDto> Suppliers { get => _suppliers; set => SetProperty(ref _suppliers, value); }
     public ObservableCollection<ProductDto> Products { get => _products; set => SetProperty(ref _products, value); }
     public ObservableCollection<InvoiceDetailItem> InvoiceDetails { get => _invoiceDetails; set => SetProperty(ref _invoiceDetails, value); }
-    public PurchaseInvoiceDto? SelectedInvoice { get => _selectedInvoice; set => SetProperty(ref _selectedInvoice, value); }
+    public ObservableCollection<InvoiceDetailItem> SelectedInvoiceDetails { get => _selectedInvoiceDetails; set => SetProperty(ref _selectedInvoiceDetails, value); }
+    public PurchaseInvoiceDto? SelectedInvoice { get => _selectedInvoice; set { if (SetProperty(ref _selectedInvoice, value)) LoadInvoiceDetail(); } }
+    public bool IsViewingDetail { get => _isViewingDetail; set => SetProperty(ref _isViewingDetail, value); }
     public string SearchText { get => _searchText; set { if (SetProperty(ref _searchText, value)) SearchInvoices(); } }
     public bool IsCreating { get => _isCreating; set => SetProperty(ref _isCreating, value); }
     public string ValidationMessage { get => _validationMessage; set => SetProperty(ref _validationMessage, value); }
@@ -59,6 +63,8 @@ public class PurchaseInvoiceViewModel : BaseViewModel
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
     public ICommand AddDetailCommand { get; }
+    public ICommand ViewDetailCommand { get; }
+    public ICommand CloseDetailCommand { get; }
 
     public PurchaseInvoiceViewModel()
     {
@@ -66,6 +72,8 @@ public class PurchaseInvoiceViewModel : BaseViewModel
         SaveCommand = new RelayCommand(_ => ExecuteSave());
         CancelCommand = new RelayCommand(_ => { IsCreating = false; });
         AddDetailCommand = new RelayCommand(_ => ExecuteAddDetail());
+        ViewDetailCommand = new RelayCommand(ExecuteViewDetail);
+        CloseDetailCommand = new RelayCommand(_ => { IsViewingDetail = false; SelectedInvoice = null; });
         IsLoading = true;
         LoadAsync();
     }
@@ -174,5 +182,41 @@ public class PurchaseInvoiceViewModel : BaseViewModel
             LoadData(); IsCreating = false; ValidationMessage = "Lưu phiếu nhập thành công!";
         }
         catch (Exception ex) { ValidationMessage = $"Lỗi: {ex.Message}"; }
+    }
+
+    private void ExecuteViewDetail(object? parameter)
+    {
+        if (parameter is PurchaseInvoiceDto invoice)
+        {
+            if (SelectedInvoice?.Id == invoice.Id && IsViewingDetail)
+            {
+                IsViewingDetail = false;
+                SelectedInvoice = null;
+                return;
+            }
+            SelectedInvoice = invoice;
+        }
+    }
+
+    private void LoadInvoiceDetail()
+    {
+        if (SelectedInvoice == null) { IsViewingDetail = false; return; }
+
+        try
+        {
+            var details = SupabaseClient.Get<PurchaseInvoiceDetailDto>("purchase_invoice_details",
+                $"purchase_invoice_id=eq.{SelectedInvoice.Id}&select=*,products(name,product_code)");
+
+            SelectedInvoiceDetails = new ObservableCollection<InvoiceDetailItem>(
+                details.Select(d => new InvoiceDetailItem
+                {
+                    ProductId = d.ProductId,
+                    ProductName = d.Product?.Name ?? $"SP #{d.ProductId}",
+                    Quantity = d.Quantity,
+                    UnitPrice = d.UnitPrice
+                }));
+            IsViewingDetail = true;
+        }
+        catch { IsViewingDetail = false; }
     }
 }

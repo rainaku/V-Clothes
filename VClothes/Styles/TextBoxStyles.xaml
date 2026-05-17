@@ -21,6 +21,12 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="6"
                             SnapsToDevicePixels="True">
+                        <Border.RenderTransform>
+                            <ScaleTransform x:Name="tbScale" ScaleX="1" ScaleY="1"/>
+                        </Border.RenderTransform>
+                        <Border.RenderTransformOrigin>
+                            <Point X="0.5" Y="0.5"/>
+                        </Border.RenderTransformOrigin>
                         <ScrollViewer x:Name="PART_ContentHost" 
                                       Focusable="False" 
                                       HorizontalScrollBarVisibility="Hidden" 
@@ -38,6 +44,30 @@
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="border" Property="Opacity" Value="0.5"/>
                         </Trigger>
+                        <EventTrigger RoutedEvent="GotFocus">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="tbScale" 
+                                                     Storyboard.TargetProperty="ScaleX" 
+                                                     To="1.02" Duration="0:0:0.12"/>
+                                    <DoubleAnimation Storyboard.TargetName="tbScale" 
+                                                     Storyboard.TargetProperty="ScaleY" 
+                                                     To="1.02" Duration="0:0:0.12"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="LostFocus">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="tbScale" 
+                                                     Storyboard.TargetProperty="ScaleX" 
+                                                     To="1.0" Duration="0:0:0.12"/>
+                                    <DoubleAnimation Storyboard.TargetName="tbScale" 
+                                                     Storyboard.TargetProperty="ScaleY" 
+                                                     To="1.0" Duration="0:0:0.12"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -64,6 +94,12 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="6"
                             SnapsToDevicePixels="True">
+                        <Border.RenderTransform>
+                            <ScaleTransform x:Name="pbScale" ScaleX="1" ScaleY="1"/>
+                        </Border.RenderTransform>
+                        <Border.RenderTransformOrigin>
+                            <Point X="0.5" Y="0.5"/>
+                        </Border.RenderTransformOrigin>
                         <ScrollViewer x:Name="PART_ContentHost" 
                                       Focusable="False" 
                                       HorizontalScrollBarVisibility="Hidden" 
@@ -77,6 +113,30 @@
                             <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource FocusBorderBrush}"/>
                             <Setter TargetName="border" Property="BorderThickness" Value="2"/>
                         </Trigger>
+                        <EventTrigger RoutedEvent="GotFocus">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="pbScale" 
+                                                     Storyboard.TargetProperty="ScaleX" 
+                                                     To="1.02" Duration="0:0:0.12"/>
+                                    <DoubleAnimation Storyboard.TargetName="pbScale" 
+                                                     Storyboard.TargetProperty="ScaleY" 
+                                                     To="1.02" Duration="0:0:0.12"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="LostFocus">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="pbScale" 
+                                                     Storyboard.TargetProperty="ScaleX" 
+                                                     To="1.0" Duration="0:0:0.12"/>
+                                    <DoubleAnimation Storyboard.TargetName="pbScale" 
+                                                     Storyboard.TargetProperty="ScaleY" 
+                                                     To="1.0" Duration="0:0:0.12"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

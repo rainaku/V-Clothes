@@ -56,17 +56,25 @@
                     </Button>
 
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40">
-                        <TextBlock Text="V-Clothes" 
+                        <TextBlock Text="V Clothes" 
                                    FontFamily="{StaticResource SFProFont}"
                                    FontSize="32" FontWeight="Bold" 
                                    Foreground="White" 
-                                   HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.6" Color="#000000"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
                         <TextBlock Text="Hệ thống quản lý cửa hàng áo thun" 
                                    FontFamily="{StaticResource SFProFont}"
                                    FontSize="14" 
-                                   Foreground="#FFFFFFCC" 
+                                   Foreground="White" 
                                    HorizontalAlignment="Center"
-                                   Margin="0,8,0,0"/>
+                                   Margin="0,8,0,0">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.6" Color="#000000"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -131,11 +139,64 @@
 
                     <!-- Login Button -->
                     <Button Content="Đăng nhập" 
-                            Style="{StaticResource PrimaryButtonStyle}"
                             Command="{Binding LoginCommand}"
                             CommandParameter="{Binding ElementName=PasswordBox}"
                             Height="40" FontSize="14"
-                            Margin="0,8,0,0"/>
+                            Margin="0,8,0,0"
+                            Cursor="Hand"
+                            FontFamily="{StaticResource SFProFont}"
+                            FontWeight="Medium"
+                            Foreground="White">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="btnBorder" 
+                                        Background="#1A1A1A" 
+                                        CornerRadius="8"
+                                        Padding="16,8"
+                                        SnapsToDevicePixels="True">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform x:Name="btnScale" ScaleX="1" ScaleY="1" CenterX="160" CenterY="20"/>
+                                    </Border.RenderTransform>
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="btnBorder" Property="Background" Value="#333333"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="btnBorder" Property="Background" Value="#000000"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter TargetName="btnBorder" Property="Opacity" Value="0.5"/>
+                                    </Trigger>
+                                    <EventTrigger RoutedEvent="MouseEnter">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="btnScale" 
+                                                                 Storyboard.TargetProperty="ScaleX" 
+                                                                 To="1.02" Duration="0:0:0.15"/>
+                                                <DoubleAnimation Storyboard.TargetName="btnScale" 
+                                                                 Storyboard.TargetProperty="ScaleY" 
+                                                                 To="1.02" Duration="0:0:0.15"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                    <EventTrigger RoutedEvent="MouseLeave">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="btnScale" 
+                                                                 Storyboard.TargetProperty="ScaleX" 
+                                                                 To="1.0" Duration="0:0:0.15"/>
+                                                <DoubleAnimation Storyboard.TargetName="btnScale" 
+                                                                 Storyboard.TargetProperty="ScaleY" 
+                                                                 To="1.0" Duration="0:0:0.15"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
 
                     <!-- Loading -->
                     <TextBlock Text="Đang xử lý..." 

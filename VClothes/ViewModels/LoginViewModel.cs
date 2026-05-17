@@ -46,7 +46,7 @@ public class LoginViewModel : BaseViewModel
 
     private bool CanLogin(object? parameter)
     {
-        return !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !IsLoading;
+        return !string.IsNullOrWhiteSpace(Username) && !IsLoading;
     }
 
     private void ExecuteLogin(object? parameter)

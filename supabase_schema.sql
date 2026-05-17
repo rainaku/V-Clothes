@@ -1,6 +1,5 @@
 -- =============================================
--- V-Clothes Database Schema for Supabase
--- Run this SQL in Supabase SQL Editor
+-- KHỞI TẠO DATABASE 
 -- =============================================
 
 -- 1. ROLES
@@ -143,9 +142,9 @@ INSERT INTO roles (id, name, description) VALUES
 (2, 'Manager', 'Quản lý - Quản lý cửa hàng'),
 (3, 'Staff', 'Nhân viên - Bán hàng');
 
--- Users (password: 123456, MD5: e10adc3949ba59abbe56e057f20f883e)
+-- Users (password: admin for admin, 123456 for others, MD5 hashed)
 INSERT INTO users (id, username, password_hash, display_name, is_active, role_id, created_at) VALUES
-(1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 'Quản trị viên', TRUE, 1, '2024-01-01'),
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Quản trị viên', TRUE, 1, '2024-01-01'),
 (2, 'manager', 'e10adc3949ba59abbe56e057f20f883e', 'Quản lý', TRUE, 2, '2024-01-01'),
 (3, 'staff', 'e10adc3949ba59abbe56e057f20f883e', 'Nhân viên', TRUE, 3, '2024-01-01');
 
