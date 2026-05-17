@@ -64,46 +64,6 @@
 
             <!-- Right Panel - Login Form -->
             <Grid Grid.Column="1" Margin="40,0">
-                <!-- Windows Window Controls -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" 
-                            HorizontalAlignment="Right" Margin="0,8,8,0">
-                    <!-- Minimize -->
-                    <Button Click="MinimizeButton_Click" Cursor="Hand" Width="36" Height="28" Margin="0,0,0,0">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="bg" Background="Transparent" CornerRadius="4">
-                                    <TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                                               Foreground="{StaticResource SecondaryTextBrush}"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="bg" Property="Background" Value="#E5E5E5"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                    <!-- Close -->
-                    <Button Click="CloseButton_Click" Cursor="Hand" Width="36" Height="28" Margin="0,0,0,0">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="bg" Background="Transparent" CornerRadius="4">
-                                    <TextBlock x:Name="icon" Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                                               Foreground="{StaticResource SecondaryTextBrush}"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="bg" Property="Background" Value="#E81123"/>
-                                        <Setter TargetName="icon" Property="Foreground" Value="White"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                </StackPanel>
-
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="Đăng nhập" 
                                Style="{StaticResource Title1Style}"
@@ -226,6 +186,46 @@
             <!-- Drag area -->
             <Border Grid.ColumnSpan="2" Height="40" VerticalAlignment="Top" 
                     Background="Transparent" MouseLeftButtonDown="DragArea_MouseLeftButtonDown"/>
+
+            <!-- Windows Window Controls (above drag area) -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" 
+                        HorizontalAlignment="Right" Margin="0,0,0,0" Panel.ZIndex="10">
+                <!-- Minimize -->
+                <Button Click="MinimizeButton_Click" Cursor="Hand" Width="46" Height="32">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="bg" Background="Transparent">
+                                <TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Foreground="{StaticResource SecondaryTextBrush}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bg" Property="Background" Value="#E5E5E5"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <!-- Close -->
+                <Button Click="CloseButton_Click" Cursor="Hand" Width="46" Height="32">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="bg" Background="Transparent" CornerRadius="0,12,0,0">
+                                <TextBlock x:Name="icon" Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Foreground="{StaticResource SecondaryTextBrush}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bg" Property="Background" Value="#E81123"/>
+                                    <Setter TargetName="icon" Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel>
         </Grid>
     </Border>
 </Window>
