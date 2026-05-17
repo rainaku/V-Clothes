@@ -10,12 +10,12 @@ public partial class EmployeeManagementView : UserControl
         InitializeComponent();
     }
 
-    private void Item_Click(object sender, MouseButtonEventArgs e)
+    private void MucDuocChon_Click(object sender, MouseButtonEventArgs e)
     {
         if (sender is System.Windows.FrameworkElement element && element.DataContext != null)
         {
-            var vm = DataContext as VClothes.ViewModels.EmployeeManagementViewModel;
-            vm?.GetType().GetProperty("SelectedEmployee")?.SetValue(vm, element.DataContext);
+            var vm = DataContext as VClothes.ViewModels.QuanLyNhanVienViewModel;
+            vm?.GetType().GetProperty("NhanVienDuocChon")?.SetValue(vm, element.DataContext);
         }
     }
 }

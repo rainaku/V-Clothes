@@ -12,15 +12,14 @@ public partial class DashboardView : UserControl
         InitializeComponent();
     }
 
-    private void QuickAction_Click(object sender, MouseButtonEventArgs e)
+    private void ThaoTacNhanh_Click(object sender, MouseButtonEventArgs e)
     {
-        if (sender is FrameworkElement element && element.Tag is string viewName)
+        if (sender is FrameworkElement element && element.Tag is string tenView)
         {
-            // Navigate via MainViewModel
-            var mainWindow = Window.GetWindow(this);
-            if (mainWindow?.DataContext is MainViewModel mainVm)
+            var cuaSoChinh = Window.GetWindow(this);
+            if (cuaSoChinh?.DataContext is ChinhViewModel chinhVm)
             {
-                mainVm.NavigateCommand.Execute(viewName);
+                chinhVm.LenhDieuHuong.Execute(tenView);
             }
         }
     }

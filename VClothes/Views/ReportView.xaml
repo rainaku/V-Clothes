@@ -30,25 +30,25 @@
                 <TextBlock Text="Loại báo cáo:" VerticalAlignment="Center" 
                            Style="{StaticResource SecondaryBodyStyle}" Margin="0,0,8,0"/>
                 <ComboBox Grid.Column="1" 
-                          ItemsSource="{Binding ReportTypes}"
-                          SelectedItem="{Binding SelectedReportType}"
+                          ItemsSource="{Binding DanhSachLoaiBaoCao}"
+                          SelectedItem="{Binding LoaiBaoCaoDuocChon}"
                           Style="{StaticResource MacComboBoxStyle}" Width="200"/>
 
                 <TextBlock Grid.Column="2" Text="Từ:" VerticalAlignment="Center" 
                            Style="{StaticResource SecondaryBodyStyle}" Margin="16,0,8,0"/>
-                <DatePicker Grid.Column="3" SelectedDate="{Binding FromDate}"
+                <DatePicker Grid.Column="3" SelectedDate="{Binding TuNgay}"
                             Style="{StaticResource MacDatePickerStyle}" Width="130"/>
 
                 <TextBlock Grid.Column="4" Text="Đến:" VerticalAlignment="Center" 
                            Style="{StaticResource SecondaryBodyStyle}" Margin="16,0,8,0"
                            HorizontalAlignment="Left"/>
 
-                <DatePicker Grid.Column="5" SelectedDate="{Binding ToDate}"
+                <DatePicker Grid.Column="5" SelectedDate="{Binding DenNgay}"
                             Style="{StaticResource MacDatePickerStyle}" Width="130" Margin="0,0,12,0"/>
 
                 <Button Grid.Column="6" Content="Xuất báo cáo" 
                         Style="{StaticResource PrimaryButtonStyle}"
-                        Command="{Binding GenerateReportCommand}"/>
+                        Command="{Binding LenhXuatBaoCao}"/>
             </Grid>
         </Border>
 
@@ -78,12 +78,12 @@
 
                     <Separator Style="{StaticResource SeparatorStyle}" Margin="0,12"/>
 
-                    <TextBlock Text="{Binding ReportTitle}" 
+                    <TextBlock Text="{Binding TieuDeBaoCao}" 
                                FontFamily="{StaticResource SFProFont}"
                                FontSize="20" FontWeight="Bold"
                                HorizontalAlignment="Center"
                                Foreground="{StaticResource AccentBlueBrush}"/>
-                    <TextBlock Text="{Binding ReportDateRange}" 
+                    <TextBlock Text="{Binding KhoangThoiGian}" 
                                Style="{StaticResource SecondaryBodyStyle}"
                                HorizontalAlignment="Center" Margin="0,4,0,0"/>
                 </StackPanel>
@@ -91,12 +91,12 @@
                 <!-- Summary Section -->
                 <Border Grid.Row="1" Background="{StaticResource HoverBackgroundBrush}" 
                         CornerRadius="8" Padding="16" Margin="0,0,0,16"
-                        Visibility="{Binding HasSummary, Converter={StaticResource BoolToVisibility}}">
+                        Visibility="{Binding CoTomTat, Converter={StaticResource BoolToVisibility}}">
                     <UniformGrid Columns="3">
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock Text="Tổng số lượng" Style="{StaticResource CaptionStyle}" 
                                        HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding SummaryCount}" 
+                            <TextBlock Text="{Binding TomTatSoLuong}" 
                                        FontFamily="{StaticResource SFProFont}"
                                        FontSize="18" FontWeight="Bold"
                                        HorizontalAlignment="Center" Margin="0,4,0,0"/>
@@ -104,7 +104,7 @@
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock Text="Tổng doanh thu" Style="{StaticResource CaptionStyle}" 
                                        HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding SummaryRevenue, Converter={StaticResource CurrencyConverter}}" 
+                            <TextBlock Text="{Binding TomTatDoanhThu, Converter={StaticResource CurrencyConverter}}" 
                                        FontFamily="{StaticResource SFProFont}"
                                        FontSize="18" FontWeight="Bold"
                                        Foreground="{StaticResource AccentGreenBrush}"
@@ -113,7 +113,7 @@
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock Text="Lợi nhuận" Style="{StaticResource CaptionStyle}" 
                                        HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding SummaryProfit, Converter={StaticResource CurrencyConverter}}" 
+                            <TextBlock Text="{Binding TomTatLoiNhuan, Converter={StaticResource CurrencyConverter}}" 
                                        FontFamily="{StaticResource SFProFont}"
                                        FontSize="18" FontWeight="Bold"
                                        Foreground="{StaticResource AccentBlueBrush}"
@@ -124,7 +124,7 @@
 
                 <!-- Report Data Table -->
                 <DataGrid Grid.Row="2" 
-                          ItemsSource="{Binding ReportData}"
+                          ItemsSource="{Binding DuLieuBaoCao}"
                           Style="{StaticResource MacDataGridStyle}"
                           ColumnHeaderStyle="{StaticResource MacDataGridColumnHeaderStyle}"
                           CellStyle="{StaticResource MacDataGridCellStyle}"
@@ -133,7 +133,7 @@
 
                 <!-- Report Footer -->
                 <Grid Grid.Row="3" Margin="0,16,0,0">
-                    <TextBlock Text="{Binding ReportGeneratedDate}" 
+                    <TextBlock Text="{Binding NgayXuatBaoCao}" 
                                Style="{StaticResource CaptionStyle}"/>
                     <TextBlock Text="Người lập báo cáo: _______________" 
                                Style="{StaticResource CaptionStyle}"

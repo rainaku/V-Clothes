@@ -12,13 +12,13 @@ public partial class PurchaseInvoiceView : UserControl
         InitializeComponent();
     }
 
-    private void Item_Click(object sender, MouseButtonEventArgs e)
+    private void MucDuocChon_Click(object sender, MouseButtonEventArgs e)
     {
         if (sender is System.Windows.FrameworkElement element &&
-            element.DataContext is PurchaseInvoiceDto invoice &&
-            DataContext is PurchaseInvoiceViewModel vm)
+            element.DataContext is PhieuNhapDto phieu &&
+            DataContext is PhieuNhapViewModel vm)
         {
-            vm.ViewDetailCommand.Execute(invoice);
+            vm.LenhXemChiTiet.Execute(phieu);
         }
     }
 }

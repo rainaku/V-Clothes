@@ -21,7 +21,7 @@
             <Grid Grid.Row="0" Margin="0,0,0,16">
                 <TextBlock Text="Danh sách sản phẩm" Style="{StaticResource HeadlineStyle}"/>
                 <Button Content="+ Thêm sản phẩm" Style="{StaticResource PrimaryButtonStyle}"
-                        Command="{Binding AddCommand}" HorizontalAlignment="Right"/>
+                        Command="{Binding LenhThem}" HorizontalAlignment="Right"/>
             </Grid>
 
             <Grid Grid.Row="1" Margin="0,0,0,12">
@@ -29,20 +29,20 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding TimKiem, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource SearchTextBoxStyle}"/>
-                <ComboBox Grid.Column="1" ItemsSource="{Binding Categories}"
-                          SelectedItem="{Binding SelectedFilterCategory}" DisplayMemberPath="Name"
+                <ComboBox Grid.Column="1" ItemsSource="{Binding DanhSachLoai}"
+                          SelectedItem="{Binding LoaiLocDuocChon}" DisplayMemberPath="Ten"
                           Style="{StaticResource MacComboBoxStyle}" Width="150" Margin="8,0,0,0"/>
             </Grid>
 
             <!-- Skeleton Loading -->
             <views:SkeletonLoading Grid.Row="2"
-                                   Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"/>
+                                   Visibility="{Binding DangTai, Converter={StaticResource BoolToVisibility}}"/>
 
             <!-- Sort Header -->
             <Border Grid.Row="2" Margin="0,0,0,4" Padding="16,8" CornerRadius="8" Background="#F9F9F9"
-                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
+                    Visibility="{Binding DangTai, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="70"/>
@@ -55,34 +55,34 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Mã SP ↕" FontFamily="{StaticResource SFProFont}" FontSize="11" FontWeight="SemiBold"
                                Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center" Cursor="Hand"
-                               MouseLeftButtonDown="SortByCode_Click"/>
+                               MouseLeftButtonDown="SapXepTheoMa_Click"/>
                     <TextBlock Grid.Column="1" Text="Tên SP ↕" FontFamily="{StaticResource SFProFont}" FontSize="11" FontWeight="SemiBold"
                                Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center" Cursor="Hand"
-                               MouseLeftButtonDown="SortByName_Click"/>
+                               MouseLeftButtonDown="SapXepTheoTen_Click"/>
                     <TextBlock Grid.Column="2" Text="Size" FontFamily="{StaticResource SFProFont}" FontSize="11" FontWeight="SemiBold"
                                Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="3" Text="Màu sắc" FontFamily="{StaticResource SFProFont}" FontSize="11" FontWeight="SemiBold"
                                Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="4" Text="Giá ↕" FontFamily="{StaticResource SFProFont}" FontSize="11" FontWeight="SemiBold"
                                Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center" Cursor="Hand"
-                               MouseLeftButtonDown="SortByPrice_Click"/>
+                               MouseLeftButtonDown="SapXepTheoGia_Click"/>
                     <TextBlock Grid.Column="5" Text="Tồn ↕" FontFamily="{StaticResource SFProFont}" FontSize="11" FontWeight="SemiBold"
                                Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand"
-                               MouseLeftButtonDown="SortByStock_Click"/>
+                               MouseLeftButtonDown="SapXepTheoTon_Click"/>
                     <TextBlock Grid.Column="6" Text="Trạng thái" FontFamily="{StaticResource SFProFont}" FontSize="11" FontWeight="SemiBold"
                                Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
                 </Grid>
             </Border>
 
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="0,36,0,0"
-                          Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
-                <ItemsControl ItemsSource="{Binding Products}"
+                          Visibility="{Binding DangTai, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
+                <ItemsControl ItemsSource="{Binding DanhSachSanPham}"
                               converters:StaggerAnimationBehavior.IsEnabled="True">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Margin="0,0,0,4" CornerRadius="8" Background="White"
                                     BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                    Cursor="Hand" MouseLeftButtonDown="Item_Click">
+                                    Cursor="Hand" MouseLeftButtonDown="MucDuocChon_Click">
                                 <Grid Margin="16,10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="70"/>
@@ -93,18 +93,18 @@
                                         <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="80"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding ProductCode}" FontFamily="{StaticResource SFProFont}" FontSize="12"
+                                    <TextBlock Text="{Binding MaSanPham}" FontFamily="{StaticResource SFProFont}" FontSize="12"
                                                Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="Medium"
+                                    <TextBlock Grid.Column="1" Text="{Binding Ten}" FontWeight="Medium"
                                                FontFamily="{StaticResource SFProFont}" FontSize="13" VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding Size}" FontFamily="{StaticResource SFProFont}" FontSize="12"
+                                    <TextBlock Grid.Column="2" Text="{Binding KichCo}" FontFamily="{StaticResource SFProFont}" FontSize="12"
                                                Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis"/>
                                     <!-- Color column with marquee -->
                                     <Border Grid.Column="3" ClipToBounds="True" VerticalAlignment="Center" Margin="0,0,8,0">
                                         <Canvas Height="16">
-                                            <TextBlock Text="{Binding Color}" FontFamily="{StaticResource SFProFont}" FontSize="12"
+                                            <TextBlock Text="{Binding MauSac}" FontFamily="{StaticResource SFProFont}" FontSize="12"
                                                        Foreground="{StaticResource SecondaryTextBrush}" Canvas.Top="0">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
@@ -134,16 +134,16 @@
                                             </TextBlock>
                                         </Canvas>
                                     </Border>
-                                    <TextBlock Grid.Column="4" Text="{Binding Price, Converter={StaticResource CurrencyConverter}}"
+                                    <TextBlock Grid.Column="4" Text="{Binding GiaBan, Converter={StaticResource CurrencyConverter}}"
                                                FontFamily="{StaticResource SFProFont}" FontSize="12" FontWeight="Medium" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="5" Text="{Binding StockQuantity}" FontFamily="{StaticResource SFProFont}" FontSize="12"
+                                    <TextBlock Grid.Column="5" Text="{Binding SoLuongTon}" FontFamily="{StaticResource SFProFont}" FontSize="12"
                                                VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     <Border Grid.Column="6" CornerRadius="10" Padding="6,2" HorizontalAlignment="Left" VerticalAlignment="Center">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Setter Property="Background" Value="#FFF0EB"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                    <DataTrigger Binding="{Binding DangHoatDong}" Value="True">
                                                         <Setter Property="Background" Value="#EBFFF0"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -155,7 +155,7 @@
                                                     <Setter Property="Text" Value="Ẩn"/>
                                                     <Setter Property="Foreground" Value="#FF3B30"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                        <DataTrigger Binding="{Binding DangHoatDong}" Value="True">
                                                             <Setter Property="Text" Value="Đang bán"/>
                                                             <Setter Property="Foreground" Value="#34C759"/>
                                                         </DataTrigger>
@@ -173,14 +173,14 @@
 
             <!-- Slide-up Edit Panel -->
             <Border Grid.Row="2" VerticalAlignment="Bottom"
-                    Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibility}}"
+                    Visibility="{Binding DangSua, Converter={StaticResource BoolToVisibility}}"
                     Background="White" CornerRadius="12" Padding="20" Margin="0,8,0,0"
                     BorderBrush="{StaticResource AccentBlueBrush}" BorderThickness="1">
                 <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
                 <Border.Style>
                     <Style TargetType="Border">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                            <DataTrigger Binding="{Binding DangSua}" Value="True">
                                 <DataTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
@@ -208,11 +208,11 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel>
                             <TextBlock Text="MÃ SẢN PHẨM" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditProductCode, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaMaSanPham, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="TÊN SẢN PHẨM" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaTen, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                     </Grid>
 
@@ -225,21 +225,21 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel>
                             <TextBlock Text="LOẠI SP" Style="{StaticResource FormLabelStyle}"/>
-                            <ComboBox ItemsSource="{Binding AllCategories}" SelectedItem="{Binding EditCategory}"
-                                      DisplayMemberPath="Name" Style="{StaticResource MacComboBoxStyle}"/>
+                            <ComboBox ItemsSource="{Binding TatCaLoai}" SelectedItem="{Binding SuaLoai}"
+                                      DisplayMemberPath="Ten" Style="{StaticResource MacComboBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="NHÀ CUNG CẤP" Style="{StaticResource FormLabelStyle}"/>
-                            <ComboBox ItemsSource="{Binding AllSuppliers}" SelectedItem="{Binding EditSupplier}"
-                                      DisplayMemberPath="Name" Style="{StaticResource MacComboBoxStyle}"/>
+                            <ComboBox ItemsSource="{Binding TatCaNCC}" SelectedItem="{Binding SuaNCC}"
+                                      DisplayMemberPath="Ten" Style="{StaticResource MacComboBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="4">
                             <TextBlock Text="GIÁ BÁN" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditPrice, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaGiaBan, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="6">
                             <TextBlock Text="GIÁ NHẬP" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditCostPrice, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaGiaNhap, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                     </Grid>
 
@@ -251,32 +251,32 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel>
                             <TextBlock Text="SIZE" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditSize, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaKichCo, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="MÀU SẮC" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaMauSac, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="4">
                             <TextBlock Text="CHẤT LIỆU" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditMaterial, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaChatLieu, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                     </Grid>
 
-                    <CheckBox Content="Đang kinh doanh" IsChecked="{Binding EditIsActive}"
+                    <CheckBox Content="Đang kinh doanh" IsChecked="{Binding SuaDangHoatDong}"
                               FontFamily="{StaticResource SFProFont}" FontSize="13" Margin="0,10,0,0"/>
 
-                    <TextBlock Text="{Binding ValidationMessage}" FontFamily="{StaticResource SFProFont}" FontSize="12"
+                    <TextBlock Text="{Binding ThongBaoXacThuc}" FontFamily="{StaticResource SFProFont}" FontSize="12"
                                TextWrapping="Wrap" Margin="0,8,0,0">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="{StaticResource AccentRedBrush}"/>
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ValidationMessage, Converter={StaticResource StringNotEmpty}}" Value="True">
+                                    <DataTrigger Binding="{Binding ThongBaoXacThuc, Converter={StaticResource StringNotEmpty}}" Value="True">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding ValidationMessage}" Value="Lưu thành công!">
+                                    <DataTrigger Binding="{Binding ThongBaoXacThuc}" Value="Lưu thành công!">
                                         <Setter Property="Foreground" Value="{StaticResource AccentGreenBrush}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -285,10 +285,10 @@
                     </TextBlock>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-                        <Button Content="Chọn ảnh" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding BrowseImageCommand}" Margin="0,0,8,0"/>
-                        <Button Content="Hủy" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding CancelCommand}" Margin="0,0,8,0"/>
-                        <Button Content="Xóa" Style="{StaticResource DangerButtonStyle}" Command="{Binding DeleteCommand}" Margin="0,0,8,0"/>
-                        <Button Content="Lưu" Style="{StaticResource PrimaryButtonStyle}" Command="{Binding SaveCommand}"/>
+                        <Button Content="Chọn ảnh" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding LenhChonAnh}" Margin="0,0,8,0"/>
+                        <Button Content="Hủy" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding LenhHuy}" Margin="0,0,8,0"/>
+                        <Button Content="Xóa" Style="{StaticResource DangerButtonStyle}" Command="{Binding LenhXoa}" Margin="0,0,8,0"/>
+                        <Button Content="Lưu" Style="{StaticResource PrimaryButtonStyle}" Command="{Binding LenhLuu}"/>
                     </StackPanel>
                 </StackPanel>
             </Border>

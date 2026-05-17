@@ -12,13 +12,13 @@ public partial class SalesInvoiceView : UserControl
         InitializeComponent();
     }
 
-    private void Item_Click(object sender, MouseButtonEventArgs e)
+    private void MucDuocChon_Click(object sender, MouseButtonEventArgs e)
     {
         if (sender is System.Windows.FrameworkElement element &&
-            element.DataContext is SalesInvoiceDto invoice &&
-            DataContext is SalesInvoiceViewModel vm)
+            element.DataContext is HoaDonBanDto hoaDon &&
+            DataContext is HoaDonBanViewModel vm)
         {
-            vm.ViewDetailCommand.Execute(invoice);
+            vm.LenhXemChiTiet.Execute(hoaDon);
         }
     }
 }

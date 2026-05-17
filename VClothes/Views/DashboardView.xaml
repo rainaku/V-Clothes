@@ -22,7 +22,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="{Binding TotalProducts}" 
+                        <TextBlock Text="{Binding TongSanPham}" 
                                    FontFamily="{StaticResource SFProFont}"
                                    FontSize="28" FontWeight="Bold"
                                    Foreground="{StaticResource PrimaryTextBrush}"/>
@@ -42,7 +42,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="{Binding TotalCategories}" 
+                        <TextBlock Text="{Binding TongLoaiSanPham}" 
                                    FontFamily="{StaticResource SFProFont}"
                                    FontSize="28" FontWeight="Bold"
                                    Foreground="{StaticResource PrimaryTextBrush}"/>
@@ -62,7 +62,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="{Binding TotalEmployees}" 
+                        <TextBlock Text="{Binding TongNhanVien}" 
                                    FontFamily="{StaticResource SFProFont}"
                                    FontSize="28" FontWeight="Bold"
                                    Foreground="{StaticResource PrimaryTextBrush}"/>
@@ -82,7 +82,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="{Binding TotalCustomers}" 
+                        <TextBlock Text="{Binding TongKhachHang}" 
                                    FontFamily="{StaticResource SFProFont}"
                                    FontSize="28" FontWeight="Bold"
                                    Foreground="{StaticResource PrimaryTextBrush}"/>
@@ -105,7 +105,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="{Binding TodayRevenue, Converter={StaticResource CurrencyConverter}}" 
+                        <TextBlock Text="{Binding DoanhThuHomNay, Converter={StaticResource CurrencyConverter}}" 
                                    FontFamily="{StaticResource SFProFont}"
                                    FontSize="22" FontWeight="Bold"
                                    Foreground="{StaticResource AccentGreenBrush}"/>
@@ -123,7 +123,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="{Binding TodayOrders}" 
+                        <TextBlock Text="{Binding DonHangHomNay}" 
                                    FontFamily="{StaticResource SFProFont}"
                                    FontSize="28" FontWeight="Bold"
                                    Foreground="{StaticResource AccentBlueBrush}"/>
@@ -143,7 +143,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="{Binding LowStockCount}" 
+                        <TextBlock Text="{Binding SapHetHang}" 
                                    FontFamily="{StaticResource SFProFont}"
                                    FontSize="28" FontWeight="Bold"
                                    Foreground="{StaticResource AccentOrangeBrush}"/>
@@ -163,7 +163,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="{Binding MonthRevenue, Converter={StaticResource CurrencyConverter}}" 
+                        <TextBlock Text="{Binding DoanhThuThang, Converter={StaticResource CurrencyConverter}}" 
                                    FontFamily="{StaticResource SFProFont}"
                                    FontSize="22" FontWeight="Bold"
                                    Foreground="{StaticResource AccentPurpleBrush}"/>
@@ -179,7 +179,7 @@
                     <UniformGrid Columns="3" Rows="2">
                         <!-- Loại sản phẩm -->
                         <Border Margin="0,0,8,8" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
-                                Cursor="Hand" Tag="Categories" MouseLeftButtonDown="QuickAction_Click">
+                                Cursor="Hand" Tag="LoaiSanPham" MouseLeftButtonDown="ThaoTacNhanh_Click">
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="36" Height="36" CornerRadius="8" Background="#F0EBFF" Margin="0,0,12,0">
                                     <TextBlock Text="🏷️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -194,7 +194,7 @@
                         </Border>
                         <!-- Nhà cung cấp -->
                         <Border Margin="4,0,4,8" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
-                                Cursor="Hand" Tag="Suppliers" MouseLeftButtonDown="QuickAction_Click">
+                                Cursor="Hand" Tag="NhaCungCap" MouseLeftButtonDown="ThaoTacNhanh_Click">
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="36" Height="36" CornerRadius="8" Background="#EBF5FF" Margin="0,0,12,0">
                                     <TextBlock Text="🏭" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -209,7 +209,7 @@
                         </Border>
                         <!-- Sản phẩm -->
                         <Border Margin="8,0,0,8" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
-                                Cursor="Hand" Tag="Products" MouseLeftButtonDown="QuickAction_Click">
+                                Cursor="Hand" Tag="SanPham" MouseLeftButtonDown="ThaoTacNhanh_Click">
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="36" Height="36" CornerRadius="8" Background="#EBFFF0" Margin="0,0,12,0">
                                     <TextBlock Text="👕" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -224,7 +224,7 @@
                         </Border>
                         <!-- Nhân viên -->
                         <Border Margin="0,0,8,0" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
-                                Cursor="Hand" Tag="Employees" MouseLeftButtonDown="QuickAction_Click">
+                                Cursor="Hand" Tag="NhanVien" MouseLeftButtonDown="ThaoTacNhanh_Click">
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="36" Height="36" CornerRadius="8" Background="#FFF5EB" Margin="0,0,12,0">
                                     <TextBlock Text="👤" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -239,7 +239,7 @@
                         </Border>
                         <!-- Phiếu nhập hàng -->
                         <Border Margin="4,0,4,0" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
-                                Cursor="Hand" Tag="PurchaseInvoices" MouseLeftButtonDown="QuickAction_Click">
+                                Cursor="Hand" Tag="PhieuNhap" MouseLeftButtonDown="ThaoTacNhanh_Click">
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="36" Height="36" CornerRadius="8" Background="#FFF0EB" Margin="0,0,12,0">
                                     <TextBlock Text="📦" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -254,7 +254,7 @@
                         </Border>
                         <!-- Hóa đơn bán hàng -->
                         <Border Margin="8,0,0,0" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
-                                Cursor="Hand" Tag="SalesInvoices" MouseLeftButtonDown="QuickAction_Click">
+                                Cursor="Hand" Tag="HoaDonBan" MouseLeftButtonDown="ThaoTacNhanh_Click">
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="36" Height="36" CornerRadius="8" Background="#EBFFF5" Margin="0,0,12,0">
                                     <TextBlock Text="🧾" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>

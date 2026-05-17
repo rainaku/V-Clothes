@@ -10,30 +10,30 @@ public partial class LoginWindow : Window
     {
         InitializeComponent();
 
-        if (DataContext is LoginViewModel vm)
+        if (DataContext is DangNhapViewModel vm)
         {
-            vm.LoginSuccessful += OnLoginSuccessful;
+            vm.DangNhapThanhCong += KhiDangNhapThanhCong;
         }
     }
 
-    private void OnLoginSuccessful()
+    private void KhiDangNhapThanhCong()
     {
-        var mainWindow = new MainWindow();
-        mainWindow.Show();
+        var cuaSoChinh = new MainWindow();
+        cuaSoChinh.Show();
         Close();
     }
 
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
+    private void NutDong_Click(object sender, RoutedEventArgs e)
     {
         Application.Current.Shutdown();
     }
 
-    private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+    private void NutThuNho_Click(object sender, RoutedEventArgs e)
     {
         WindowState = WindowState.Minimized;
     }
 
-    private void DragArea_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void VungKeo_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         DragMove();
     }

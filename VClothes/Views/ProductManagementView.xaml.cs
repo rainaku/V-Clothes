@@ -11,32 +11,32 @@ public partial class ProductManagementView : UserControl
         InitializeComponent();
     }
 
-    private void Item_Click(object sender, MouseButtonEventArgs e)
+    private void MucDuocChon_Click(object sender, MouseButtonEventArgs e)
     {
         if (sender is System.Windows.FrameworkElement element && element.DataContext != null)
         {
-            var vm = DataContext as ProductManagementViewModel;
-            vm?.GetType().GetProperty("SelectedProduct")?.SetValue(vm, element.DataContext);
+            var vm = DataContext as QuanLySanPhamViewModel;
+            vm?.GetType().GetProperty("SanPhamDuocChon")?.SetValue(vm, element.DataContext);
         }
     }
 
-    private void SortByCode_Click(object sender, MouseButtonEventArgs e)
+    private void SapXepTheoMa_Click(object sender, MouseButtonEventArgs e)
     {
-        (DataContext as ProductManagementViewModel)?.SortCommand.Execute("product_code");
+        (DataContext as QuanLySanPhamViewModel)?.LenhSapXep.Execute("product_code");
     }
 
-    private void SortByName_Click(object sender, MouseButtonEventArgs e)
+    private void SapXepTheoTen_Click(object sender, MouseButtonEventArgs e)
     {
-        (DataContext as ProductManagementViewModel)?.SortCommand.Execute("name");
+        (DataContext as QuanLySanPhamViewModel)?.LenhSapXep.Execute("name");
     }
 
-    private void SortByPrice_Click(object sender, MouseButtonEventArgs e)
+    private void SapXepTheoGia_Click(object sender, MouseButtonEventArgs e)
     {
-        (DataContext as ProductManagementViewModel)?.SortCommand.Execute("price");
+        (DataContext as QuanLySanPhamViewModel)?.LenhSapXep.Execute("price");
     }
 
-    private void SortByStock_Click(object sender, MouseButtonEventArgs e)
+    private void SapXepTheoTon_Click(object sender, MouseButtonEventArgs e)
     {
-        (DataContext as ProductManagementViewModel)?.SortCommand.Execute("stock_quantity");
+        (DataContext as QuanLySanPhamViewModel)?.LenhSapXep.Execute("stock_quantity");
     }
 }

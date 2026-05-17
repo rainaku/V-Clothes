@@ -12,7 +12,7 @@
         ResizeMode="NoResize">
 
     <Window.DataContext>
-        <vm:LoginViewModel/>
+        <vm:DangNhapViewModel/>
     </Window.DataContext>
 
     <Window.Resources>
@@ -74,7 +74,7 @@
 
                     <!-- Username -->
                     <TextBlock Text="TÊN ĐĂNG NHẬP" Style="{StaticResource FormLabelStyle}"/>
-                    <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" 
+                    <TextBox Text="{Binding TenDangNhap, UpdateSourceTrigger=PropertyChanged}" 
                              Style="{StaticResource MacTextBoxStyle}"
                              Margin="0,0,0,16"/>
 
@@ -85,7 +85,7 @@
                                  Margin="0,0,0,8"/>
 
                     <!-- Error Message -->
-                    <TextBlock Text="{Binding ErrorMessage}" 
+                    <TextBlock Text="{Binding ThongBaoLoi}" 
                                Foreground="{StaticResource AccentRedBrush}"
                                FontFamily="{StaticResource SFProFont}"
                                FontSize="12"
@@ -95,7 +95,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ErrorMessage, Converter={StaticResource StringNotEmpty}}" Value="True">
+                                    <DataTrigger Binding="{Binding ThongBaoLoi, Converter={StaticResource StringNotEmpty}}" Value="True">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -105,7 +105,7 @@
 
                     <!-- Login Button -->
                     <Button Content="Đăng nhập" 
-                            Command="{Binding LoginCommand}"
+                            Command="{Binding LenhDangNhap}"
                             CommandParameter="{Binding ElementName=PasswordBox}"
                             Height="40" FontSize="14"
                             Margin="0,8,0,0"
@@ -171,7 +171,7 @@
                                FontFamily="{StaticResource SFProFont}"
                                FontSize="12"
                                Margin="0,12,0,0"
-                               Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"/>
+                               Visibility="{Binding DangTai, Converter={StaticResource BoolToVisibility}}"/>
 
                     <!-- Footer -->
                     <TextBlock Text="© 2025 V-Clothes. All rights reserved." 
@@ -185,13 +185,13 @@
 
             <!-- Drag area -->
             <Border Grid.ColumnSpan="2" Height="40" VerticalAlignment="Top" 
-                    Background="Transparent" MouseLeftButtonDown="DragArea_MouseLeftButtonDown"/>
+                    Background="Transparent" MouseLeftButtonDown="VungKeo_MouseLeftButtonDown"/>
 
             <!-- Windows Window Controls (above drag area) -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" 
                         HorizontalAlignment="Right" Margin="0,0,0,0" Panel.ZIndex="10">
                 <!-- Minimize -->
-                <Button Click="MinimizeButton_Click" Cursor="Hand" Width="46" Height="32">
+                <Button Click="NutThuNho_Click" Cursor="Hand" Width="46" Height="32">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="bg" Background="Transparent">
@@ -208,7 +208,7 @@
                     </Button.Template>
                 </Button>
                 <!-- Close -->
-                <Button Click="CloseButton_Click" Cursor="Hand" Width="46" Height="32">
+                <Button Click="NutDong_Click" Cursor="Hand" Width="46" Height="32">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="bg" Background="Transparent" CornerRadius="0,12,0,0">

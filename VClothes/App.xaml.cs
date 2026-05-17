@@ -10,7 +10,7 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        // Global exception handlers to prevent crashes
+        // Xử lý ngoại lệ toàn cục để tránh crash
         DispatcherUnhandledException += (s, args) =>
         {
             args.Handled = true;
@@ -18,17 +18,17 @@ public partial class App : Application
 
         AppDomain.CurrentDomain.UnhandledException += (s, args) =>
         {
-            // Log if needed
+            // Ghi log nếu cần
         };
 
-        // Test Supabase connection
+        // Kiểm tra kết nối Supabase
         try
         {
-            SupabaseClient.TestConnection();
+            SupabaseClient.KiemTraKetNoi();
         }
         catch
         {
-            // App can still run - will show errors when accessing data
+            // App vẫn chạy - sẽ hiện lỗi khi truy cập dữ liệu
         }
     }
 }

@@ -29,17 +29,17 @@
 
                 <TextBlock Text="Từ ngày:" VerticalAlignment="Center" 
                            Style="{StaticResource SecondaryBodyStyle}" Margin="0,0,8,0"/>
-                <DatePicker Grid.Column="1" SelectedDate="{Binding FromDate}"
+                <DatePicker Grid.Column="1" SelectedDate="{Binding TuNgay}"
                             Style="{StaticResource MacDatePickerStyle}" Width="140"/>
 
                 <TextBlock Grid.Column="2" Text="Đến ngày:" VerticalAlignment="Center" 
                            Style="{StaticResource SecondaryBodyStyle}" Margin="16,0,8,0"/>
-                <DatePicker Grid.Column="3" SelectedDate="{Binding ToDate}"
+                <DatePicker Grid.Column="3" SelectedDate="{Binding DenNgay}"
                             Style="{StaticResource MacDatePickerStyle}" Width="140"/>
 
                 <Button Grid.Column="5" Content="Xem thống kê" 
                         Style="{StaticResource PrimaryButtonStyle}"
-                        Command="{Binding FilterCommand}"/>
+                        Command="{Binding LenhLoc}"/>
             </Grid>
         </Border>
 
@@ -48,7 +48,7 @@
             <Border Style="{StaticResource CardStyle}" Margin="0,0,8,0">
                 <StackPanel>
                     <TextBlock Text="Tổng doanh thu" Style="{StaticResource CaptionStyle}"/>
-                    <TextBlock Text="{Binding TotalRevenue, Converter={StaticResource CurrencyConverter}}" 
+                    <TextBlock Text="{Binding TongDoanhThu, Converter={StaticResource CurrencyConverter}}" 
                                FontFamily="{StaticResource SFProFont}"
                                FontSize="20" FontWeight="Bold"
                                Foreground="{StaticResource AccentGreenBrush}"
@@ -58,7 +58,7 @@
             <Border Style="{StaticResource CardStyle}" Margin="8,0,8,0">
                 <StackPanel>
                     <TextBlock Text="Số hóa đơn" Style="{StaticResource CaptionStyle}"/>
-                    <TextBlock Text="{Binding TotalInvoices}" 
+                    <TextBlock Text="{Binding TongHoaDon}" 
                                FontFamily="{StaticResource SFProFont}"
                                FontSize="20" FontWeight="Bold"
                                Foreground="{StaticResource AccentBlueBrush}"
@@ -68,7 +68,7 @@
             <Border Style="{StaticResource CardStyle}" Margin="8,0,8,0">
                 <StackPanel>
                     <TextBlock Text="Trung bình/đơn" Style="{StaticResource CaptionStyle}"/>
-                    <TextBlock Text="{Binding AveragePerInvoice, Converter={StaticResource CurrencyConverter}}" 
+                    <TextBlock Text="{Binding TrungBinhMoiDon, Converter={StaticResource CurrencyConverter}}" 
                                FontFamily="{StaticResource SFProFont}"
                                FontSize="20" FontWeight="Bold"
                                Foreground="{StaticResource AccentPurpleBrush}"
@@ -78,7 +78,7 @@
             <Border Style="{StaticResource CardStyle}" Margin="8,0,0,0">
                 <StackPanel>
                     <TextBlock Text="Lợi nhuận ước tính" Style="{StaticResource CaptionStyle}"/>
-                    <TextBlock Text="{Binding EstimatedProfit, Converter={StaticResource CurrencyConverter}}" 
+                    <TextBlock Text="{Binding LoiNhuanUocTinh, Converter={StaticResource CurrencyConverter}}" 
                                FontFamily="{StaticResource SFProFont}"
                                FontSize="20" FontWeight="Bold"
                                Foreground="{StaticResource AccentOrangeBrush}"
@@ -99,19 +99,19 @@
                            Style="{StaticResource HeadlineStyle}" Margin="0,0,0,12"/>
 
                 <DataGrid Grid.Row="1" 
-                          ItemsSource="{Binding SalesInvoices}"
+                          ItemsSource="{Binding DanhSachHoaDonBan}"
                           Style="{StaticResource MacDataGridStyle}"
                           ColumnHeaderStyle="{StaticResource MacDataGridColumnHeaderStyle}"
                           CellStyle="{StaticResource MacDataGridCellStyle}"
                           RowStyle="{StaticResource MacDataGridRowStyle}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Mã HĐ" Binding="{Binding InvoiceCode}" Width="100"/>
-                        <DataGridTextColumn Header="Ngày" Binding="{Binding InvoiceDate, StringFormat=dd/MM/yyyy}" Width="100"/>
-                        <DataGridTextColumn Header="Khách hàng" Binding="{Binding CustomerName}" Width="*"/>
-                        <DataGridTextColumn Header="Nhân viên" Binding="{Binding EmployeeName}" Width="120"/>
-                        <DataGridTextColumn Header="Tổng tiền" Binding="{Binding TotalAmount, Converter={StaticResource CurrencyConverter}}" Width="120"/>
-                        <DataGridTextColumn Header="Giảm giá" Binding="{Binding Discount, Converter={StaticResource CurrencyConverter}}" Width="100"/>
-                        <DataGridTextColumn Header="Thanh toán" Binding="{Binding FinalAmount, Converter={StaticResource CurrencyConverter}}" Width="130"/>
+                        <DataGridTextColumn Header="Mã HĐ" Binding="{Binding MaHoaDon}" Width="100"/>
+                        <DataGridTextColumn Header="Ngày" Binding="{Binding NgayBan, StringFormat=dd/MM/yyyy}" Width="100"/>
+                        <DataGridTextColumn Header="Khách hàng" Binding="{Binding TenKhachHang}" Width="*"/>
+                        <DataGridTextColumn Header="Nhân viên" Binding="{Binding TenNhanVien}" Width="120"/>
+                        <DataGridTextColumn Header="Tổng tiền" Binding="{Binding TongTien, Converter={StaticResource CurrencyConverter}}" Width="120"/>
+                        <DataGridTextColumn Header="Giảm giá" Binding="{Binding GiamGia, Converter={StaticResource CurrencyConverter}}" Width="100"/>
+                        <DataGridTextColumn Header="Thanh toán" Binding="{Binding ThanhToan, Converter={StaticResource CurrencyConverter}}" Width="130"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

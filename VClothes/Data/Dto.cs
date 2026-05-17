@@ -2,149 +2,147 @@ using System.Text.Json.Serialization;
 
 namespace VClothes.Data;
 
-// DTOs that map directly to Supabase PostgREST JSON (snake_case)
-// These are used for serialization/deserialization with the REST API.
+// DTOs ánh xạ trực tiếp với Supabase PostgREST JSON (snake_case)
 
-public class RoleDto
+public class VaiTroDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("name")] public string Name { get; set; } = string.Empty;
-    [JsonPropertyName("description")] public string? Description { get; set; }
+    [JsonPropertyName("name")] public string Ten { get; set; } = string.Empty;
+    [JsonPropertyName("description")] public string? MoTa { get; set; }
 }
 
-public class UserDto
+public class NguoiDungDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("username")] public string Username { get; set; } = string.Empty;
-    [JsonPropertyName("password_hash")] public string PasswordHash { get; set; } = string.Empty;
-    [JsonPropertyName("display_name")] public string? DisplayName { get; set; }
-    [JsonPropertyName("is_active")] public bool IsActive { get; set; }
-    [JsonPropertyName("role_id")] public int RoleId { get; set; }
-    [JsonPropertyName("created_at")] public DateTime? CreatedAt { get; set; }
-    [JsonPropertyName("last_login")] public DateTime? LastLogin { get; set; }
+    [JsonPropertyName("username")] public string TenDangNhap { get; set; } = string.Empty;
+    [JsonPropertyName("password_hash")] public string MatKhauHash { get; set; } = string.Empty;
+    [JsonPropertyName("display_name")] public string? TenHienThi { get; set; }
+    [JsonPropertyName("is_active")] public bool DangHoatDong { get; set; }
+    [JsonPropertyName("role_id")] public int VaiTroId { get; set; }
+    [JsonPropertyName("created_at")] public DateTime? NgayTao { get; set; }
+    [JsonPropertyName("last_login")] public DateTime? LanDangNhapCuoi { get; set; }
 }
 
-public class CategoryDto
+public class LoaiSanPhamDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("name")] public string Name { get; set; } = string.Empty;
-    [JsonPropertyName("description")] public string? Description { get; set; }
-    [JsonPropertyName("is_active")] public bool IsActive { get; set; } = true;
-    [JsonPropertyName("created_at")] public DateTime? CreatedAt { get; set; }
+    [JsonPropertyName("name")] public string Ten { get; set; } = string.Empty;
+    [JsonPropertyName("description")] public string? MoTa { get; set; }
+    [JsonPropertyName("is_active")] public bool DangHoatDong { get; set; } = true;
+    [JsonPropertyName("created_at")] public DateTime? NgayTao { get; set; }
 }
 
-public class SupplierDto
+public class NhaCungCapDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("name")] public string Name { get; set; } = string.Empty;
-    [JsonPropertyName("address")] public string? Address { get; set; }
-    [JsonPropertyName("phone")] public string? Phone { get; set; }
+    [JsonPropertyName("name")] public string Ten { get; set; } = string.Empty;
+    [JsonPropertyName("address")] public string? DiaChi { get; set; }
+    [JsonPropertyName("phone")] public string? DienThoai { get; set; }
     [JsonPropertyName("email")] public string? Email { get; set; }
-    [JsonPropertyName("note")] public string? Note { get; set; }
-    [JsonPropertyName("is_active")] public bool IsActive { get; set; } = true;
-    [JsonPropertyName("created_at")] public DateTime? CreatedAt { get; set; }
+    [JsonPropertyName("note")] public string? GhiChu { get; set; }
+    [JsonPropertyName("is_active")] public bool DangHoatDong { get; set; } = true;
+    [JsonPropertyName("created_at")] public DateTime? NgayTao { get; set; }
 }
 
-public class EmployeeDto
+public class NhanVienDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("employee_code")] public string EmployeeCode { get; set; } = string.Empty;
-    [JsonPropertyName("full_name")] public string FullName { get; set; } = string.Empty;
-    [JsonPropertyName("gender")] public string? Gender { get; set; }
-    [JsonPropertyName("date_of_birth")] public DateTime? DateOfBirth { get; set; }
-    [JsonPropertyName("phone")] public string? Phone { get; set; }
+    [JsonPropertyName("employee_code")] public string MaNhanVien { get; set; } = string.Empty;
+    [JsonPropertyName("full_name")] public string HoTen { get; set; } = string.Empty;
+    [JsonPropertyName("gender")] public string? GioiTinh { get; set; }
+    [JsonPropertyName("date_of_birth")] public DateTime? NgaySinh { get; set; }
+    [JsonPropertyName("phone")] public string? DienThoai { get; set; }
     [JsonPropertyName("email")] public string? Email { get; set; }
-    [JsonPropertyName("address")] public string? Address { get; set; }
-    [JsonPropertyName("position")] public string? Position { get; set; }
-    [JsonPropertyName("hire_date")] public DateTime? HireDate { get; set; }
-    [JsonPropertyName("is_active")] public bool IsActive { get; set; } = true;
-    [JsonPropertyName("user_id")] public int? UserId { get; set; }
+    [JsonPropertyName("address")] public string? DiaChi { get; set; }
+    [JsonPropertyName("position")] public string? ChucVu { get; set; }
+    [JsonPropertyName("hire_date")] public DateTime? NgayVaoLam { get; set; }
+    [JsonPropertyName("is_active")] public bool DangHoatDong { get; set; } = true;
+    [JsonPropertyName("user_id")] public int? NguoiDungId { get; set; }
 }
 
-public class CustomerDto
+public class KhachHangDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("full_name")] public string FullName { get; set; } = string.Empty;
-    [JsonPropertyName("phone")] public string? Phone { get; set; }
+    [JsonPropertyName("full_name")] public string HoTen { get; set; } = string.Empty;
+    [JsonPropertyName("phone")] public string? DienThoai { get; set; }
     [JsonPropertyName("email")] public string? Email { get; set; }
-    [JsonPropertyName("address")] public string? Address { get; set; }
-    [JsonPropertyName("created_at")] public DateTime? CreatedAt { get; set; }
+    [JsonPropertyName("address")] public string? DiaChi { get; set; }
+    [JsonPropertyName("created_at")] public DateTime? NgayTao { get; set; }
 }
 
-public class ProductDto
+public class SanPhamDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("product_code")] public string ProductCode { get; set; } = string.Empty;
-    [JsonPropertyName("name")] public string Name { get; set; } = string.Empty;
-    [JsonPropertyName("description")] public string? Description { get; set; }
-    [JsonPropertyName("price")] public decimal Price { get; set; }
-    [JsonPropertyName("cost_price")] public decimal CostPrice { get; set; }
-    [JsonPropertyName("stock_quantity")] public int StockQuantity { get; set; }
-    [JsonPropertyName("size")] public string? Size { get; set; }
-    [JsonPropertyName("color")] public string? Color { get; set; }
-    [JsonPropertyName("material")] public string? Material { get; set; }
-    [JsonPropertyName("image_path")] public string? ImagePath { get; set; }
-    [JsonPropertyName("category_id")] public int CategoryId { get; set; }
-    [JsonPropertyName("supplier_id")] public int SupplierId { get; set; }
-    [JsonPropertyName("is_active")] public bool IsActive { get; set; } = true;
-    [JsonPropertyName("created_at")] public DateTime? CreatedAt { get; set; }
+    [JsonPropertyName("product_code")] public string MaSanPham { get; set; } = string.Empty;
+    [JsonPropertyName("name")] public string Ten { get; set; } = string.Empty;
+    [JsonPropertyName("description")] public string? MoTa { get; set; }
+    [JsonPropertyName("price")] public decimal GiaBan { get; set; }
+    [JsonPropertyName("cost_price")] public decimal GiaNhap { get; set; }
+    [JsonPropertyName("stock_quantity")] public int SoLuongTon { get; set; }
+    [JsonPropertyName("size")] public string? KichCo { get; set; }
+    [JsonPropertyName("color")] public string? MauSac { get; set; }
+    [JsonPropertyName("material")] public string? ChatLieu { get; set; }
+    [JsonPropertyName("image_path")] public string? DuongDanAnh { get; set; }
+    [JsonPropertyName("category_id")] public int LoaiSanPhamId { get; set; }
+    [JsonPropertyName("supplier_id")] public int NhaCungCapId { get; set; }
+    [JsonPropertyName("is_active")] public bool DangHoatDong { get; set; } = true;
+    [JsonPropertyName("created_at")] public DateTime? NgayTao { get; set; }
 
-    // Joined fields (from select with foreign key)
-    [JsonPropertyName("categories")] public CategoryDto? Category { get; set; }
-    [JsonPropertyName("suppliers")] public SupplierDto? Supplier { get; set; }
+    [JsonPropertyName("categories")] public LoaiSanPhamDto? LoaiSanPham { get; set; }
+    [JsonPropertyName("suppliers")] public NhaCungCapDto? NhaCungCap { get; set; }
 }
 
-public class PurchaseInvoiceDto
+public class PhieuNhapDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("invoice_code")] public string InvoiceCode { get; set; } = string.Empty;
-    [JsonPropertyName("invoice_date")] public DateTime InvoiceDate { get; set; }
-    [JsonPropertyName("supplier_id")] public int SupplierId { get; set; }
-    [JsonPropertyName("employee_id")] public int EmployeeId { get; set; }
-    [JsonPropertyName("total_amount")] public decimal TotalAmount { get; set; }
-    [JsonPropertyName("note")] public string? Note { get; set; }
+    [JsonPropertyName("invoice_code")] public string MaPhieu { get; set; } = string.Empty;
+    [JsonPropertyName("invoice_date")] public DateTime NgayNhap { get; set; }
+    [JsonPropertyName("supplier_id")] public int NhaCungCapId { get; set; }
+    [JsonPropertyName("employee_id")] public int NhanVienId { get; set; }
+    [JsonPropertyName("total_amount")] public decimal TongTien { get; set; }
+    [JsonPropertyName("note")] public string? GhiChu { get; set; }
 
-    [JsonPropertyName("suppliers")] public SupplierDto? Supplier { get; set; }
-    [JsonPropertyName("employees")] public EmployeeDto? Employee { get; set; }
+    [JsonPropertyName("suppliers")] public NhaCungCapDto? NhaCungCap { get; set; }
+    [JsonPropertyName("employees")] public NhanVienDto? NhanVien { get; set; }
 }
 
-public class PurchaseInvoiceDetailDto
+public class ChiTietPhieuNhapDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("purchase_invoice_id")] public int PurchaseInvoiceId { get; set; }
-    [JsonPropertyName("product_id")] public int ProductId { get; set; }
-    [JsonPropertyName("quantity")] public int Quantity { get; set; }
-    [JsonPropertyName("unit_price")] public decimal UnitPrice { get; set; }
-    [JsonPropertyName("sub_total")] public decimal SubTotal { get; set; }
+    [JsonPropertyName("purchase_invoice_id")] public int PhieuNhapId { get; set; }
+    [JsonPropertyName("product_id")] public int SanPhamId { get; set; }
+    [JsonPropertyName("quantity")] public int SoLuong { get; set; }
+    [JsonPropertyName("unit_price")] public decimal DonGia { get; set; }
+    [JsonPropertyName("sub_total")] public decimal ThanhTien { get; set; }
 
-    [JsonPropertyName("products")] public ProductDto? Product { get; set; }
+    [JsonPropertyName("products")] public SanPhamDto? SanPham { get; set; }
 }
 
-public class SalesInvoiceDto
+public class HoaDonBanDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("invoice_code")] public string InvoiceCode { get; set; } = string.Empty;
-    [JsonPropertyName("invoice_date")] public DateTime InvoiceDate { get; set; }
-    [JsonPropertyName("customer_id")] public int? CustomerId { get; set; }
-    [JsonPropertyName("employee_id")] public int EmployeeId { get; set; }
-    [JsonPropertyName("total_amount")] public decimal TotalAmount { get; set; }
-    [JsonPropertyName("discount")] public decimal Discount { get; set; }
-    [JsonPropertyName("final_amount")] public decimal FinalAmount { get; set; }
-    [JsonPropertyName("note")] public string? Note { get; set; }
+    [JsonPropertyName("invoice_code")] public string MaHoaDon { get; set; } = string.Empty;
+    [JsonPropertyName("invoice_date")] public DateTime NgayBan { get; set; }
+    [JsonPropertyName("customer_id")] public int? KhachHangId { get; set; }
+    [JsonPropertyName("employee_id")] public int NhanVienId { get; set; }
+    [JsonPropertyName("total_amount")] public decimal TongTien { get; set; }
+    [JsonPropertyName("discount")] public decimal GiamGia { get; set; }
+    [JsonPropertyName("final_amount")] public decimal ThanhToan { get; set; }
+    [JsonPropertyName("note")] public string? GhiChu { get; set; }
 
-    [JsonPropertyName("customers")] public CustomerDto? Customer { get; set; }
-    [JsonPropertyName("employees")] public EmployeeDto? Employee { get; set; }
+    [JsonPropertyName("customers")] public KhachHangDto? KhachHang { get; set; }
+    [JsonPropertyName("employees")] public NhanVienDto? NhanVien { get; set; }
 }
 
-public class SalesInvoiceDetailDto
+public class ChiTietHoaDonBanDto
 {
     [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("sales_invoice_id")] public int SalesInvoiceId { get; set; }
-    [JsonPropertyName("product_id")] public int ProductId { get; set; }
-    [JsonPropertyName("quantity")] public int Quantity { get; set; }
-    [JsonPropertyName("unit_price")] public decimal UnitPrice { get; set; }
-    [JsonPropertyName("discount")] public decimal Discount { get; set; }
-    [JsonPropertyName("sub_total")] public decimal SubTotal { get; set; }
+    [JsonPropertyName("sales_invoice_id")] public int HoaDonBanId { get; set; }
+    [JsonPropertyName("product_id")] public int SanPhamId { get; set; }
+    [JsonPropertyName("quantity")] public int SoLuong { get; set; }
+    [JsonPropertyName("unit_price")] public decimal DonGia { get; set; }
+    [JsonPropertyName("discount")] public decimal GiamGia { get; set; }
+    [JsonPropertyName("sub_total")] public decimal ThanhTien { get; set; }
 
-    [JsonPropertyName("products")] public ProductDto? Product { get; set; }
+    [JsonPropertyName("products")] public SanPhamDto? SanPham { get; set; }
 }

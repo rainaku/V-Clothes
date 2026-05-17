@@ -10,41 +10,41 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        if (DataContext is MainViewModel vm)
+        if (DataContext is ChinhViewModel vm)
         {
-            vm.LogoutRequested += OnLogoutRequested;
+            vm.YeuCauDangXuat += KhiYeuCauDangXuat;
         }
     }
 
-    private void OnLogoutRequested()
+    private void KhiYeuCauDangXuat()
     {
-        var loginWindow = new LoginWindow();
-        loginWindow.Show();
+        var cuaSoDangNhap = new LoginWindow();
+        cuaSoDangNhap.Show();
         Close();
     }
 
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
+    private void NutDong_Click(object sender, RoutedEventArgs e)
     {
         Application.Current.Shutdown();
     }
 
-    private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+    private void NutThuNho_Click(object sender, RoutedEventArgs e)
     {
         WindowState = WindowState.Minimized;
     }
 
-    private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+    private void NutPhongTo_Click(object sender, RoutedEventArgs e)
     {
         WindowState = WindowState == WindowState.Maximized 
             ? WindowState.Normal 
             : WindowState.Maximized;
     }
 
-    private void DragArea_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void VungKeo_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (e.ClickCount == 2)
         {
-            MaximizeButton_Click(sender, e);
+            NutPhongTo_Click(sender, e);
         }
         else
         {

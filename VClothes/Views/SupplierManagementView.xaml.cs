@@ -10,12 +10,12 @@ public partial class SupplierManagementView : UserControl
         InitializeComponent();
     }
 
-    private void Item_Click(object sender, MouseButtonEventArgs e)
+    private void MucDuocChon_Click(object sender, MouseButtonEventArgs e)
     {
         if (sender is System.Windows.FrameworkElement element && element.DataContext != null)
         {
-            var vm = DataContext as VClothes.ViewModels.SupplierManagementViewModel;
-            vm?.GetType().GetProperty("SelectedSupplier")?.SetValue(vm, element.DataContext);
+            var vm = DataContext as VClothes.ViewModels.QuanLyNhaCungCapViewModel;
+            vm?.GetType().GetProperty("NccDuocChon")?.SetValue(vm, element.DataContext);
         }
     }
 }

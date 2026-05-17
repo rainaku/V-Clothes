@@ -10,15 +10,14 @@ public partial class CategoryManagementView : UserControl
         InitializeComponent();
     }
 
-    private void Item_Click(object sender, MouseButtonEventArgs e)
+    private void MucDuocChon_Click(object sender, MouseButtonEventArgs e)
     {
-        // Trigger selection via DataContext binding
         if (sender is System.Windows.FrameworkElement element && element.DataContext != null)
         {
-            var vm = DataContext as VClothes.ViewModels.CategoryManagementViewModel;
+            var vm = DataContext as VClothes.ViewModels.QuanLyLoaiSanPhamViewModel;
             if (vm != null)
             {
-                vm.SelectedCategory = element.DataContext as VClothes.Data.CategoryDto;
+                vm.LoaiDuocChon = element.DataContext as VClothes.Data.LoaiSanPhamDto;
             }
         }
     }

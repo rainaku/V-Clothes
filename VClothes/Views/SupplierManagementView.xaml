@@ -20,25 +20,25 @@
             <Grid Grid.Row="0" Margin="0,0,0,16">
                 <TextBlock Text="Danh sách nhà cung cấp" Style="{StaticResource HeadlineStyle}"/>
                 <Button Content="+ Thêm mới" Style="{StaticResource PrimaryButtonStyle}"
-                        Command="{Binding AddCommand}" HorizontalAlignment="Right"/>
+                        Command="{Binding LenhThem}" HorizontalAlignment="Right"/>
             </Grid>
 
-            <TextBox Grid.Row="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Grid.Row="1" Text="{Binding TimKiem, UpdateSourceTrigger=PropertyChanged}"
                      Style="{StaticResource SearchTextBoxStyle}" Margin="0,0,0,12"/>
 
             <!-- Skeleton Loading -->
             <views:SkeletonLoading Grid.Row="2"
-                                   Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"/>
+                                   Visibility="{Binding DangTai, Converter={StaticResource BoolToVisibility}}"/>
 
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto"
-                          Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
-                <ItemsControl ItemsSource="{Binding Suppliers}"
+                          Visibility="{Binding DangTai, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
+                <ItemsControl ItemsSource="{Binding DanhSachNCC}"
                               converters:StaggerAnimationBehavior.IsEnabled="True">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Margin="0,0,0,4" CornerRadius="8" Background="White"
                                     BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                    Cursor="Hand" MouseLeftButtonDown="Item_Click">
+                                    Cursor="Hand" MouseLeftButtonDown="MucDuocChon_Click">
                                 <Grid Margin="16,12">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="50"/>
@@ -49,9 +49,9 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="{Binding Id}" Foreground="{StaticResource SecondaryTextBrush}"
                                                FontFamily="{StaticResource SFProFont}" FontSize="13" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="Medium"
+                                    <TextBlock Grid.Column="1" Text="{Binding Ten}" FontWeight="Medium"
                                                FontFamily="{StaticResource SFProFont}" FontSize="13" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding Phone}" Foreground="{StaticResource SecondaryTextBrush}"
+                                    <TextBlock Grid.Column="2" Text="{Binding DienThoai}" Foreground="{StaticResource SecondaryTextBrush}"
                                                FontFamily="{StaticResource SFProFont}" FontSize="13" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="3" Text="{Binding Email}" Foreground="{StaticResource SecondaryTextBrush}"
                                                FontFamily="{StaticResource SFProFont}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
@@ -60,7 +60,7 @@
                                             <Style TargetType="Border">
                                                 <Setter Property="Background" Value="#FFF0EB"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                    <DataTrigger Binding="{Binding DangHoatDong}" Value="True">
                                                         <Setter Property="Background" Value="#EBFFF0"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -72,7 +72,7 @@
                                                     <Setter Property="Text" Value="Ẩn"/>
                                                     <Setter Property="Foreground" Value="#FF3B30"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                        <DataTrigger Binding="{Binding DangHoatDong}" Value="True">
                                                             <Setter Property="Text" Value="Hoạt động"/>
                                                             <Setter Property="Foreground" Value="#34C759"/>
                                                         </DataTrigger>
@@ -90,14 +90,14 @@
 
             <!-- Slide-up Edit Panel -->
             <Border Grid.Row="2" VerticalAlignment="Bottom"
-                    Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibility}}"
+                    Visibility="{Binding DangSua, Converter={StaticResource BoolToVisibility}}"
                     Background="White" CornerRadius="12" Padding="20" Margin="0,8,0,0"
                     BorderBrush="{StaticResource AccentBlueBrush}" BorderThickness="1">
                 <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
                 <Border.Style>
                     <Style TargetType="Border">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                            <DataTrigger Binding="{Binding DangSua}" Value="True">
                                 <DataTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
@@ -127,15 +127,15 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel>
                             <TextBlock Text="TÊN NHÀ CUNG CẤP" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaTen, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="ĐIỆN THOẠI" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditPhone, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaDienThoai, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="4">
                             <TextBlock Text="EMAIL" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditEmail, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaEmail, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                     </Grid>
 
@@ -145,28 +145,28 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel>
                             <TextBlock Text="ĐỊA CHỈ" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditAddress, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaDiaChi, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="GHI CHÚ" Style="{StaticResource FormLabelStyle}"/>
-                            <TextBox Text="{Binding EditNote, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                            <TextBox Text="{Binding SuaGhiChu, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
                         </StackPanel>
                     </Grid>
 
-                    <CheckBox Content="Đang hoạt động" IsChecked="{Binding EditIsActive}"
+                    <CheckBox Content="Đang hoạt động" IsChecked="{Binding SuaDangHoatDong}"
                               FontFamily="{StaticResource SFProFont}" FontSize="13" Margin="0,12,0,0"/>
 
-                    <TextBlock Text="{Binding ValidationMessage}" FontFamily="{StaticResource SFProFont}" FontSize="12"
+                    <TextBlock Text="{Binding ThongBaoXacThuc}" FontFamily="{StaticResource SFProFont}" FontSize="12"
                                TextWrapping="Wrap" Margin="0,8,0,0">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="{StaticResource AccentRedBrush}"/>
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ValidationMessage, Converter={StaticResource StringNotEmpty}}" Value="True">
+                                    <DataTrigger Binding="{Binding ThongBaoXacThuc, Converter={StaticResource StringNotEmpty}}" Value="True">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding ValidationMessage}" Value="Lưu thành công!">
+                                    <DataTrigger Binding="{Binding ThongBaoXacThuc}" Value="Lưu thành công!">
                                         <Setter Property="Foreground" Value="{StaticResource AccentGreenBrush}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -175,9 +175,9 @@
                     </TextBlock>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
-                        <Button Content="Hủy" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding CancelCommand}" Margin="0,0,8,0"/>
-                        <Button Content="Xóa" Style="{StaticResource DangerButtonStyle}" Command="{Binding DeleteCommand}" Margin="0,0,8,0"/>
-                        <Button Content="Lưu" Style="{StaticResource PrimaryButtonStyle}" Command="{Binding SaveCommand}"/>
+                        <Button Content="Hủy" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding LenhHuy}" Margin="0,0,8,0"/>
+                        <Button Content="Xóa" Style="{StaticResource DangerButtonStyle}" Command="{Binding LenhXoa}" Margin="0,0,8,0"/>
+                        <Button Content="Lưu" Style="{StaticResource PrimaryButtonStyle}" Command="{Binding LenhLuu}"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
