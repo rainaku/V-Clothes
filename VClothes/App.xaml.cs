@@ -1,5 +1,6 @@
 using System.Windows;
 using VClothes.Data;
+using VClothes.Services;
 
 namespace VClothes;
 
@@ -20,15 +21,21 @@ public partial class App : Application
             // Log if needed
         };
 
-        // Ensure database is created
+        // Test Supabase connection
         try
         {
-            using var context = new VClothesDbContext();
-            context.Database.EnsureCreated();
+            SupabaseClient.TestConnection();
         }
         catch
         {
-            // App can still run without DB for UI purposes
+            // App can still run - will show errors when accessing data
         }
+
+        // Auto-login as admin for direct access
+        try
+        {
+            AuthService.Login("admin", "123456");
+        }
+        catch { }
     }
 }

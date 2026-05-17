@@ -75,7 +75,7 @@ public class MainViewModel : BaseViewModel
         LogoutCommand = new RelayCommand(ExecuteLogout);
     }
 
-    private void ExecuteNavigate(object? parameter)
+    private async void ExecuteNavigate(object? parameter)
     {
         var viewName = parameter?.ToString();
         if (string.IsNullOrEmpty(viewName)) return;
@@ -84,49 +84,46 @@ public class MainViewModel : BaseViewModel
 
         try
         {
-            switch (viewName)
+            BaseViewModel? vm = null;
+
+            await Task.Run(() =>
             {
-                case "Dashboard":
-                    CurrentViewModel = new DashboardViewModel();
-                    CurrentViewTitle = "Tổng quan";
-                    break;
-                case "Categories":
-                    CurrentViewModel = new CategoryManagementViewModel();
-                    CurrentViewTitle = "Quản lý loại sản phẩm";
-                    break;
-                case "Suppliers":
-                    CurrentViewModel = new SupplierManagementViewModel();
-                    CurrentViewTitle = "Quản lý nhà cung cấp";
-                    break;
-                case "Products":
-                    CurrentViewModel = new ProductManagementViewModel();
-                    CurrentViewTitle = "Quản lý sản phẩm";
-                    break;
-                case "Employees":
-                    CurrentViewModel = new EmployeeManagementViewModel();
-                    CurrentViewTitle = "Quản lý nhân viên";
-                    break;
-                case "PurchaseInvoices":
-                    CurrentViewModel = new PurchaseInvoiceViewModel();
-                    CurrentViewTitle = "Phiếu nhập hàng";
-                    break;
-                case "SalesInvoices":
-                    CurrentViewModel = new SalesInvoiceViewModel();
-                    CurrentViewTitle = "Hóa đơn bán hàng";
-                    break;
-                case "Revenue":
-                    CurrentViewModel = new RevenueStatisticsViewModel();
-                    CurrentViewTitle = "Thống kê doanh thu";
-                    break;
-                case "Reports":
-                    CurrentViewModel = new ReportViewModel();
-                    CurrentViewTitle = "Báo cáo";
-                    break;
+                vm = viewName switch
+                {
+                    "Dashboard" => new DashboardViewModel(),
+                    "Categories" => new CategoryManagementViewModel(),
+                    "Suppliers" => new SupplierManagementViewModel(),
+                    "Products" => new ProductManagementViewModel(),
+                    "Employees" => new EmployeeManagementViewModel(),
+                    "PurchaseInvoices" => new PurchaseInvoiceViewModel(),
+                    "SalesInvoices" => new SalesInvoiceViewModel(),
+                    "Revenue" => new RevenueStatisticsViewModel(),
+                    "Reports" => new ReportViewModel(),
+                    _ => null
+                };
+            });
+
+            if (vm != null)
+            {
+                CurrentViewModel = vm;
+                CurrentViewTitle = viewName switch
+                {
+                    "Dashboard" => "Tổng quan",
+                    "Categories" => "Quản lý loại sản phẩm",
+                    "Suppliers" => "Quản lý nhà cung cấp",
+                    "Products" => "Quản lý sản phẩm",
+                    "Employees" => "Quản lý nhân viên",
+                    "PurchaseInvoices" => "Phiếu nhập hàng",
+                    "SalesInvoices" => "Hóa đơn bán hàng",
+                    "Revenue" => "Thống kê doanh thu",
+                    "Reports" => "Báo cáo",
+                    _ => CurrentViewTitle
+                };
             }
         }
         catch (Exception)
         {
-            // Prevent crash on navigation - view will remain unchanged
+            // Prevent crash on navigation
         }
     }
 

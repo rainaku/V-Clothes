@@ -2,14 +2,13 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using VClothes.Data;
-using VClothes.Models;
 
 namespace VClothes.ViewModels;
 
 public class CategoryManagementViewModel : BaseViewModel
 {
-    private ObservableCollection<Category> _categories = new();
-    private Category? _selectedCategory;
+    private ObservableCollection<CategoryDto> _categories = new();
+    private CategoryDto? _selectedCategory;
     private string _searchText = string.Empty;
     private string _editName = string.Empty;
     private string _editDescription = string.Empty;
@@ -17,13 +16,8 @@ public class CategoryManagementViewModel : BaseViewModel
     private bool _isEditing;
     private string _validationMessage = string.Empty;
 
-    public ObservableCollection<Category> Categories
-    {
-        get => _categories;
-        set => SetProperty(ref _categories, value);
-    }
-
-    public Category? SelectedCategory
+    public ObservableCollection<CategoryDto> Categories { get => _categories; set => SetProperty(ref _categories, value); }
+    public CategoryDto? SelectedCategory
     {
         get => _selectedCategory;
         set
@@ -34,49 +28,16 @@ public class CategoryManagementViewModel : BaseViewModel
                 EditDescription = value.Description ?? string.Empty;
                 EditIsActive = value.IsActive;
                 IsEditing = true;
+                ValidationMessage = string.Empty;
             }
         }
     }
-
-    public string SearchText
-    {
-        get => _searchText;
-        set
-        {
-            if (SetProperty(ref _searchText, value))
-                SearchCategories();
-        }
-    }
-
-    public string EditName
-    {
-        get => _editName;
-        set => SetProperty(ref _editName, value);
-    }
-
-    public string EditDescription
-    {
-        get => _editDescription;
-        set => SetProperty(ref _editDescription, value);
-    }
-
-    public bool EditIsActive
-    {
-        get => _editIsActive;
-        set => SetProperty(ref _editIsActive, value);
-    }
-
-    public bool IsEditing
-    {
-        get => _isEditing;
-        set => SetProperty(ref _isEditing, value);
-    }
-
-    public string ValidationMessage
-    {
-        get => _validationMessage;
-        set => SetProperty(ref _validationMessage, value);
-    }
+    public string SearchText { get => _searchText; set { if (SetProperty(ref _searchText, value)) SearchCategories(); } }
+    public string EditName { get => _editName; set => SetProperty(ref _editName, value); }
+    public string EditDescription { get => _editDescription; set => SetProperty(ref _editDescription, value); }
+    public bool EditIsActive { get => _editIsActive; set => SetProperty(ref _editIsActive, value); }
+    public bool IsEditing { get => _isEditing; set => SetProperty(ref _isEditing, value); }
+    public string ValidationMessage { get => _validationMessage; set => SetProperty(ref _validationMessage, value); }
 
     public ICommand AddCommand { get; }
     public ICommand SaveCommand { get; }
@@ -86,51 +47,40 @@ public class CategoryManagementViewModel : BaseViewModel
 
     public CategoryManagementViewModel()
     {
-        AddCommand = new RelayCommand(ExecuteAdd);
-        SaveCommand = new RelayCommand(ExecuteSave);
-        DeleteCommand = new RelayCommand(ExecuteDelete);
-        CancelCommand = new RelayCommand(ExecuteCancel);
-        SearchCommand = new RelayCommand(ExecuteSearch);
+        AddCommand = new RelayCommand(_ => ExecuteAdd());
+        SaveCommand = new RelayCommand(_ => ExecuteSave());
+        DeleteCommand = new RelayCommand(_ => ExecuteDelete());
+        CancelCommand = new RelayCommand(_ => ExecuteCancel());
+        SearchCommand = new RelayCommand(_ => SearchCategories());
         try { LoadCategories(); } catch { }
     }
 
     private void LoadCategories()
     {
-        using var context = new VClothesDbContext();
-        var categories = context.Categories.OrderBy(c => c.Name).ToList();
-        Categories = new ObservableCollection<Category>(categories);
+        var categories = SupabaseClient.Get<CategoryDto>("categories", "order=name.asc");
+        Categories = new ObservableCollection<CategoryDto>(categories);
     }
 
     private void SearchCategories()
     {
-        using var context = new VClothesDbContext();
-        var query = context.Categories.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(SearchText))
+        try
         {
-            query = query.Where(c => c.Name.Contains(SearchText) || 
-                                     (c.Description != null && c.Description.Contains(SearchText)));
-        }
+            var query = "order=name.asc";
+            if (!string.IsNullOrWhiteSpace(SearchText))
+                query = $"or=(name.ilike.%25{Uri.EscapeDataString(SearchText)}%25,description.ilike.%25{Uri.EscapeDataString(SearchText)}%25)&order=name.asc";
 
-        var categories = query.OrderBy(c => c.Name).ToList();
-        Categories = new ObservableCollection<Category>(categories);
+            var categories = SupabaseClient.Get<CategoryDto>("categories", query);
+            Categories = new ObservableCollection<CategoryDto>(categories);
 
-        if (!categories.Any() && !string.IsNullOrWhiteSpace(SearchText))
-        {
-            ValidationMessage = "Không tìm thấy loại sản phẩm nào phù hợp";
+            if (!categories.Any() && !string.IsNullOrWhiteSpace(SearchText))
+                ValidationMessage = "Không tìm thấy loại sản phẩm nào phù hợp";
+            else
+                ValidationMessage = string.Empty;
         }
-        else
-        {
-            ValidationMessage = string.Empty;
-        }
+        catch { }
     }
 
-    private void ExecuteSearch(object? parameter)
-    {
-        SearchCategories();
-    }
-
-    private void ExecuteAdd(object? parameter)
+    private void ExecuteAdd()
     {
         SelectedCategory = null;
         EditName = string.Empty;
@@ -140,95 +90,75 @@ public class CategoryManagementViewModel : BaseViewModel
         ValidationMessage = string.Empty;
     }
 
-    private void ExecuteSave(object? parameter)
+    private void ExecuteSave()
     {
         ValidationMessage = string.Empty;
-
         if (string.IsNullOrWhiteSpace(EditName))
-        {
-            ValidationMessage = "Tên loại sản phẩm không được để trống";
-            return;
-        }
-
+        { ValidationMessage = "Tên loại sản phẩm không được để trống"; return; }
         if (EditName.Length > 100)
-        {
-            ValidationMessage = "Tên loại sản phẩm không được quá 100 ký tự";
-            return;
-        }
+        { ValidationMessage = "Tên loại sản phẩm không được quá 100 ký tự"; return; }
 
-        using var context = new VClothesDbContext();
-
-        // Check duplicate name
-        var currentId = SelectedCategory?.Id ?? 0;
-        var existingCategory = context.Categories
-            .FirstOrDefault(c => c.Name == EditName && c.Id != currentId);
-        if (existingCategory != null)
+        try
         {
-            ValidationMessage = "Tên loại sản phẩm đã tồn tại";
-            return;
-        }
+            // Check duplicate
+            var existing = SupabaseClient.Get<CategoryDto>("categories",
+                $"name=eq.{Uri.EscapeDataString(EditName)}&id=neq.{SelectedCategory?.Id ?? 0}");
+            if (existing.Any())
+            { ValidationMessage = "Tên loại sản phẩm đã tồn tại"; return; }
 
-        if (SelectedCategory != null)
-        {
-            var category = context.Categories.Find(SelectedCategory.Id);
-            if (category != null)
+            if (SelectedCategory != null)
             {
-                category.Name = EditName;
-                category.Description = EditDescription;
-                category.IsActive = EditIsActive;
-                context.SaveChanges();
+                SupabaseClient.Update("categories", $"id=eq.{SelectedCategory.Id}", new
+                {
+                    name = EditName,
+                    description = string.IsNullOrWhiteSpace(EditDescription) ? (string?)null : EditDescription,
+                    is_active = EditIsActive
+                });
             }
-        }
-        else
-        {
-            var newCategory = new Category
+            else
             {
-                Name = EditName,
-                Description = EditDescription,
-                IsActive = EditIsActive,
-                CreatedAt = DateTime.Now
-            };
-            context.Categories.Add(newCategory);
-            context.SaveChanges();
-        }
+                SupabaseClient.Insert<CategoryDto>("categories", new
+                {
+                    name = EditName,
+                    description = string.IsNullOrWhiteSpace(EditDescription) ? (string?)null : EditDescription,
+                    is_active = EditIsActive
+                });
+            }
 
-        LoadCategories();
-        ExecuteCancel(null);
-        ValidationMessage = "Lưu thành công!";
+            LoadCategories();
+            ExecuteCancel();
+            ValidationMessage = "Lưu thành công!";
+        }
+        catch (Exception ex)
+        {
+            ValidationMessage = $"Lỗi: {ex.Message}";
+        }
     }
 
-    private void ExecuteDelete(object? parameter)
+    private void ExecuteDelete()
     {
         if (SelectedCategory == null) return;
-
-        var result = MessageBox.Show(
-            $"Bạn có chắc muốn xóa loại sản phẩm '{SelectedCategory.Name}'?",
-            "Xác nhận xóa",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
+        var result = MessageBox.Show($"Bạn có chắc muốn xóa loại sản phẩm '{SelectedCategory.Name}'?",
+            "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
         if (result == MessageBoxResult.Yes)
         {
-            using var context = new VClothesDbContext();
-            var category = context.Categories.Find(SelectedCategory.Id);
-            if (category != null)
+            try
             {
-                var hasProducts = context.Products.Any(p => p.CategoryId == category.Id);
-                if (hasProducts)
-                {
-                    ValidationMessage = "Không thể xóa loại sản phẩm đang có sản phẩm liên kết";
-                    return;
-                }
+                var hasProducts = SupabaseClient.Get<ProductDto>("products",
+                    $"category_id=eq.{SelectedCategory.Id}&select=id&limit=1");
+                if (hasProducts.Any())
+                { ValidationMessage = "Không thể xóa loại sản phẩm đang có sản phẩm liên kết"; return; }
 
-                context.Categories.Remove(category);
-                context.SaveChanges();
+                SupabaseClient.Delete("categories", $"id=eq.{SelectedCategory.Id}");
                 LoadCategories();
-                ExecuteCancel(null);
+                ExecuteCancel();
             }
+            catch (Exception ex) { ValidationMessage = $"Lỗi: {ex.Message}"; }
         }
     }
 
-    private void ExecuteCancel(object? parameter)
+    private void ExecuteCancel()
     {
         SelectedCategory = null;
         EditName = string.Empty;

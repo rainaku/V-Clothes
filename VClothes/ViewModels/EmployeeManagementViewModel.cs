@@ -1,13 +1,14 @@
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
-using VClothes.Models;
+using VClothes.Data;
 
 namespace VClothes.ViewModels;
 
 public class EmployeeManagementViewModel : BaseViewModel
 {
-    private ObservableCollection<Employee> _employees = new();
-    private Employee? _selectedEmployee;
+    private ObservableCollection<EmployeeDto> _employees = new();
+    private EmployeeDto? _selectedEmployee;
     private string _searchText = string.Empty;
     private bool _isEditing;
     private string _validationMessage = string.Empty;
@@ -22,9 +23,9 @@ public class EmployeeManagementViewModel : BaseViewModel
     private string _editPosition = string.Empty;
     private bool _editIsActive = true;
 
-    public ObservableCollection<Employee> Employees { get => _employees; set => SetProperty(ref _employees, value); }
-    public Employee? SelectedEmployee { get => _selectedEmployee; set { if (SetProperty(ref _selectedEmployee, value) && value != null) LoadEmployeeForEdit(value); } }
-    public string SearchText { get => _searchText; set { if (SetProperty(ref _searchText, value)) SearchEmployees(); } }
+    public ObservableCollection<EmployeeDto> Employees { get => _employees; set => SetProperty(ref _employees, value); }
+    public EmployeeDto? SelectedEmployee { get => _selectedEmployee; set { if (SetProperty(ref _selectedEmployee, value) && value != null) LoadForEdit(value); } }
+    public string SearchText { get => _searchText; set { if (SetProperty(ref _searchText, value)) Search(); } }
     public bool IsEditing { get => _isEditing; set => SetProperty(ref _isEditing, value); }
     public string ValidationMessage { get => _validationMessage; set => SetProperty(ref _validationMessage, value); }
 
@@ -46,49 +47,91 @@ public class EmployeeManagementViewModel : BaseViewModel
     public EmployeeManagementViewModel()
     {
         AddCommand = new RelayCommand(_ => ExecuteAdd());
-        SaveCommand = new RelayCommand(_ => { /* TODO */ });
-        DeleteCommand = new RelayCommand(_ => { /* TODO */ });
+        SaveCommand = new RelayCommand(_ => ExecuteSave());
+        DeleteCommand = new RelayCommand(_ => ExecuteDelete());
         CancelCommand = new RelayCommand(_ => ExecuteCancel());
+        try { Load(); } catch { }
     }
 
-    private void LoadEmployeeForEdit(Employee emp)
+    private void Load()
     {
-        EditEmployeeCode = emp.EmployeeCode;
-        EditFullName = emp.FullName;
-        EditGender = emp.Gender;
-        EditDateOfBirth = emp.DateOfBirth;
-        EditPhone = emp.Phone ?? string.Empty;
-        EditEmail = emp.Email ?? string.Empty;
-        EditAddress = emp.Address ?? string.Empty;
-        EditPosition = emp.Position ?? string.Empty;
-        EditIsActive = emp.IsActive;
-        IsEditing = true;
+        var employees = SupabaseClient.Get<EmployeeDto>("employees", "order=employee_code.asc");
+        Employees = new ObservableCollection<EmployeeDto>(employees);
+    }
+
+    private void Search()
+    {
+        try
+        {
+            var query = "order=employee_code.asc";
+            if (!string.IsNullOrWhiteSpace(SearchText))
+                query = $"or=(full_name.ilike.%25{Uri.EscapeDataString(SearchText)}%25,employee_code.ilike.%25{Uri.EscapeDataString(SearchText)}%25,phone.ilike.%25{Uri.EscapeDataString(SearchText)}%25)&order=employee_code.asc";
+            Employees = new ObservableCollection<EmployeeDto>(SupabaseClient.Get<EmployeeDto>("employees", query));
+        }
+        catch { }
+    }
+
+    private void LoadForEdit(EmployeeDto e)
+    {
+        EditEmployeeCode = e.EmployeeCode; EditFullName = e.FullName;
+        EditGender = e.Gender; EditDateOfBirth = e.DateOfBirth;
+        EditPhone = e.Phone ?? ""; EditEmail = e.Email ?? "";
+        EditAddress = e.Address ?? ""; EditPosition = e.Position ?? "";
+        EditIsActive = e.IsActive; IsEditing = true; ValidationMessage = "";
     }
 
     private void ExecuteAdd()
     {
         SelectedEmployee = null;
-        EditEmployeeCode = string.Empty;
-        EditFullName = string.Empty;
-        EditGender = null;
-        EditDateOfBirth = null;
-        EditPhone = string.Empty;
-        EditEmail = string.Empty;
-        EditAddress = string.Empty;
-        EditPosition = string.Empty;
-        EditIsActive = true;
-        IsEditing = true;
-        ValidationMessage = string.Empty;
+        EditEmployeeCode = EditFullName = EditPhone = EditEmail = EditAddress = EditPosition = "";
+        EditGender = null; EditDateOfBirth = null; EditIsActive = true;
+        IsEditing = true; ValidationMessage = "";
     }
 
-    private void ExecuteCancel()
+    private void ExecuteSave()
     {
-        IsEditing = false;
-        SelectedEmployee = null;
+        ValidationMessage = "";
+        if (string.IsNullOrWhiteSpace(EditEmployeeCode)) { ValidationMessage = "Mã nhân viên không được để trống"; return; }
+        if (string.IsNullOrWhiteSpace(EditFullName)) { ValidationMessage = "Họ tên không được để trống"; return; }
+
+        try
+        {
+            var existing = SupabaseClient.Get<EmployeeDto>("employees",
+                $"employee_code=eq.{Uri.EscapeDataString(EditEmployeeCode)}&id=neq.{SelectedEmployee?.Id ?? 0}&select=id");
+            if (existing.Any()) { ValidationMessage = "Mã nhân viên đã tồn tại"; return; }
+
+            var data = new
+            {
+                employee_code = EditEmployeeCode,
+                full_name = EditFullName,
+                gender = string.IsNullOrWhiteSpace(EditGender) ? (string?)null : EditGender,
+                date_of_birth = EditDateOfBirth?.ToString("yyyy-MM-dd"),
+                phone = string.IsNullOrWhiteSpace(EditPhone) ? (string?)null : EditPhone,
+                email = string.IsNullOrWhiteSpace(EditEmail) ? (string?)null : EditEmail,
+                address = string.IsNullOrWhiteSpace(EditAddress) ? (string?)null : EditAddress,
+                position = string.IsNullOrWhiteSpace(EditPosition) ? (string?)null : EditPosition,
+                is_active = EditIsActive
+            };
+
+            if (SelectedEmployee != null)
+                SupabaseClient.Update("employees", $"id=eq.{SelectedEmployee.Id}", data);
+            else
+                SupabaseClient.Insert<EmployeeDto>("employees", data);
+
+            Load(); ExecuteCancel(); ValidationMessage = "Lưu thành công!";
+        }
+        catch (Exception ex) { ValidationMessage = $"Lỗi: {ex.Message}"; }
     }
 
-    private void SearchEmployees()
+    private void ExecuteDelete()
     {
-        // TODO: Implement search
+        if (SelectedEmployee == null) return;
+        if (MessageBox.Show($"Xóa nhân viên '{SelectedEmployee.FullName}'?", "Xác nhận", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        {
+            try { SupabaseClient.Delete("employees", $"id=eq.{SelectedEmployee.Id}"); Load(); ExecuteCancel(); }
+            catch (Exception ex) { ValidationMessage = $"Lỗi: {ex.Message}"; }
+        }
     }
+
+    private void ExecuteCancel() { IsEditing = false; SelectedEmployee = null; }
 }

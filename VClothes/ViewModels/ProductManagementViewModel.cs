@@ -1,22 +1,23 @@
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
-using VClothes.Models;
+using Microsoft.Win32;
+using VClothes.Data;
 
 namespace VClothes.ViewModels;
 
 public class ProductManagementViewModel : BaseViewModel
 {
-    private ObservableCollection<Product> _products = new();
-    private ObservableCollection<Category> _categories = new();
-    private ObservableCollection<Category> _allCategories = new();
-    private ObservableCollection<Supplier> _allSuppliers = new();
-    private Product? _selectedProduct;
-    private Category? _selectedFilterCategory;
+    private ObservableCollection<ProductDto> _products = new();
+    private ObservableCollection<CategoryDto> _categories = new();
+    private ObservableCollection<CategoryDto> _allCategories = new();
+    private ObservableCollection<SupplierDto> _allSuppliers = new();
+    private ProductDto? _selectedProduct;
+    private CategoryDto? _selectedFilterCategory;
     private string _searchText = string.Empty;
     private bool _isEditing;
     private string _validationMessage = string.Empty;
 
-    // Edit fields
     private string _editProductCode = string.Empty;
     private string _editName = string.Empty;
     private string _editDescription = string.Empty;
@@ -26,16 +27,16 @@ public class ProductManagementViewModel : BaseViewModel
     private string _editColor = string.Empty;
     private string _editMaterial = string.Empty;
     private string _editImagePath = string.Empty;
-    private Category? _editCategory;
-    private Supplier? _editSupplier;
+    private CategoryDto? _editCategory;
+    private SupplierDto? _editSupplier;
     private bool _editIsActive = true;
 
-    public ObservableCollection<Product> Products { get => _products; set => SetProperty(ref _products, value); }
-    public ObservableCollection<Category> Categories { get => _categories; set => SetProperty(ref _categories, value); }
-    public ObservableCollection<Category> AllCategories { get => _allCategories; set => SetProperty(ref _allCategories, value); }
-    public ObservableCollection<Supplier> AllSuppliers { get => _allSuppliers; set => SetProperty(ref _allSuppliers, value); }
-    public Product? SelectedProduct { get => _selectedProduct; set { if (SetProperty(ref _selectedProduct, value) && value != null) LoadProductForEdit(value); } }
-    public Category? SelectedFilterCategory { get => _selectedFilterCategory; set { if (SetProperty(ref _selectedFilterCategory, value)) SearchProducts(); } }
+    public ObservableCollection<ProductDto> Products { get => _products; set => SetProperty(ref _products, value); }
+    public ObservableCollection<CategoryDto> Categories { get => _categories; set => SetProperty(ref _categories, value); }
+    public ObservableCollection<CategoryDto> AllCategories { get => _allCategories; set => SetProperty(ref _allCategories, value); }
+    public ObservableCollection<SupplierDto> AllSuppliers { get => _allSuppliers; set => SetProperty(ref _allSuppliers, value); }
+    public ProductDto? SelectedProduct { get => _selectedProduct; set { if (SetProperty(ref _selectedProduct, value) && value != null) LoadProductForEdit(value); } }
+    public CategoryDto? SelectedFilterCategory { get => _selectedFilterCategory; set { if (SetProperty(ref _selectedFilterCategory, value)) SearchProducts(); } }
     public string SearchText { get => _searchText; set { if (SetProperty(ref _searchText, value)) SearchProducts(); } }
     public bool IsEditing { get => _isEditing; set => SetProperty(ref _isEditing, value); }
     public string ValidationMessage { get => _validationMessage; set => SetProperty(ref _validationMessage, value); }
@@ -49,8 +50,8 @@ public class ProductManagementViewModel : BaseViewModel
     public string EditColor { get => _editColor; set => SetProperty(ref _editColor, value); }
     public string EditMaterial { get => _editMaterial; set => SetProperty(ref _editMaterial, value); }
     public string EditImagePath { get => _editImagePath; set => SetProperty(ref _editImagePath, value); }
-    public Category? EditCategory { get => _editCategory; set => SetProperty(ref _editCategory, value); }
-    public Supplier? EditSupplier { get => _editSupplier; set => SetProperty(ref _editSupplier, value); }
+    public CategoryDto? EditCategory { get => _editCategory; set => SetProperty(ref _editCategory, value); }
+    public SupplierDto? EditSupplier { get => _editSupplier; set => SetProperty(ref _editSupplier, value); }
     public bool EditIsActive { get => _editIsActive; set => SetProperty(ref _editIsActive, value); }
 
     public ICommand AddCommand { get; }
@@ -62,13 +63,44 @@ public class ProductManagementViewModel : BaseViewModel
     public ProductManagementViewModel()
     {
         AddCommand = new RelayCommand(_ => ExecuteAdd());
-        SaveCommand = new RelayCommand(_ => { /* TODO */ });
-        DeleteCommand = new RelayCommand(_ => { /* TODO */ });
+        SaveCommand = new RelayCommand(_ => ExecuteSave());
+        DeleteCommand = new RelayCommand(_ => ExecuteDelete());
         CancelCommand = new RelayCommand(_ => ExecuteCancel());
-        BrowseImageCommand = new RelayCommand(_ => { /* TODO */ });
+        BrowseImageCommand = new RelayCommand(_ => ExecuteBrowseImage());
+        try { LoadData(); } catch { }
     }
 
-    private void LoadProductForEdit(Product product)
+    private void LoadData()
+    {
+        var products = SupabaseClient.Get<ProductDto>("products", "select=*,categories(*),suppliers(*)&order=name.asc");
+        Products = new ObservableCollection<ProductDto>(products);
+
+        var categories = SupabaseClient.Get<CategoryDto>("categories", "is_active=eq.true&order=name.asc");
+        AllCategories = new ObservableCollection<CategoryDto>(categories);
+        Categories = new ObservableCollection<CategoryDto>(categories);
+
+        var suppliers = SupabaseClient.Get<SupplierDto>("suppliers", "is_active=eq.true&order=name.asc");
+        AllSuppliers = new ObservableCollection<SupplierDto>(suppliers);
+    }
+
+    private void SearchProducts()
+    {
+        try
+        {
+            var filters = new List<string> { "select=*,categories(*),suppliers(*)", "order=name.asc" };
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+                filters.Add($"or=(name.ilike.%25{Uri.EscapeDataString(SearchText)}%25,product_code.ilike.%25{Uri.EscapeDataString(SearchText)}%25)");
+            if (SelectedFilterCategory != null)
+                filters.Add($"category_id=eq.{SelectedFilterCategory.Id}");
+
+            var products = SupabaseClient.Get<ProductDto>("products", string.Join("&", filters));
+            Products = new ObservableCollection<ProductDto>(products);
+        }
+        catch { }
+    }
+
+    private void LoadProductForEdit(ProductDto product)
     {
         EditProductCode = product.ProductCode;
         EditName = product.Name;
@@ -79,35 +111,84 @@ public class ProductManagementViewModel : BaseViewModel
         EditColor = product.Color ?? string.Empty;
         EditMaterial = product.Material ?? string.Empty;
         EditImagePath = product.ImagePath ?? string.Empty;
+        EditCategory = AllCategories.FirstOrDefault(c => c.Id == product.CategoryId);
+        EditSupplier = AllSuppliers.FirstOrDefault(s => s.Id == product.SupplierId);
         EditIsActive = product.IsActive;
         IsEditing = true;
+        ValidationMessage = string.Empty;
     }
 
     private void ExecuteAdd()
     {
         SelectedProduct = null;
-        EditProductCode = string.Empty;
-        EditName = string.Empty;
-        EditDescription = string.Empty;
-        EditPrice = 0;
-        EditCostPrice = 0;
-        EditSize = string.Empty;
-        EditColor = string.Empty;
-        EditMaterial = string.Empty;
-        EditImagePath = string.Empty;
-        EditIsActive = true;
-        IsEditing = true;
+        EditProductCode = EditName = EditDescription = EditSize = EditColor = EditMaterial = EditImagePath = string.Empty;
+        EditPrice = EditCostPrice = 0;
+        EditCategory = null; EditSupplier = null;
+        EditIsActive = true; IsEditing = true; ValidationMessage = string.Empty;
+    }
+
+    private void ExecuteSave()
+    {
         ValidationMessage = string.Empty;
+        if (string.IsNullOrWhiteSpace(EditProductCode)) { ValidationMessage = "Mã sản phẩm không được để trống"; return; }
+        if (string.IsNullOrWhiteSpace(EditName)) { ValidationMessage = "Tên sản phẩm không được để trống"; return; }
+        if (EditCategory == null) { ValidationMessage = "Vui lòng chọn loại sản phẩm"; return; }
+        if (EditSupplier == null) { ValidationMessage = "Vui lòng chọn nhà cung cấp"; return; }
+        if (EditPrice <= 0) { ValidationMessage = "Giá bán phải lớn hơn 0"; return; }
+
+        try
+        {
+            var existing = SupabaseClient.Get<ProductDto>("products",
+                $"product_code=eq.{Uri.EscapeDataString(EditProductCode)}&id=neq.{SelectedProduct?.Id ?? 0}&select=id");
+            if (existing.Any()) { ValidationMessage = "Mã sản phẩm đã tồn tại"; return; }
+
+            var data = new
+            {
+                product_code = EditProductCode,
+                name = EditName,
+                description = string.IsNullOrWhiteSpace(EditDescription) ? (string?)null : EditDescription,
+                price = EditPrice,
+                cost_price = EditCostPrice,
+                size = string.IsNullOrWhiteSpace(EditSize) ? (string?)null : EditSize,
+                color = string.IsNullOrWhiteSpace(EditColor) ? (string?)null : EditColor,
+                material = string.IsNullOrWhiteSpace(EditMaterial) ? (string?)null : EditMaterial,
+                image_path = string.IsNullOrWhiteSpace(EditImagePath) ? (string?)null : EditImagePath,
+                category_id = EditCategory.Id,
+                supplier_id = EditSupplier.Id,
+                is_active = EditIsActive
+            };
+
+            if (SelectedProduct != null)
+                SupabaseClient.Update("products", $"id=eq.{SelectedProduct.Id}", data);
+            else
+                SupabaseClient.Insert<ProductDto>("products", data);
+
+            LoadData();
+            ExecuteCancel();
+            ValidationMessage = "Lưu thành công!";
+        }
+        catch (Exception ex) { ValidationMessage = $"Lỗi: {ex.Message}"; }
     }
 
-    private void ExecuteCancel()
+    private void ExecuteDelete()
     {
-        IsEditing = false;
-        SelectedProduct = null;
+        if (SelectedProduct == null) return;
+        if (MessageBox.Show($"Bạn có chắc muốn xóa '{SelectedProduct.Name}'?", "Xác nhận", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        {
+            try
+            {
+                SupabaseClient.Delete("products", $"id=eq.{SelectedProduct.Id}");
+                LoadData(); ExecuteCancel();
+            }
+            catch (Exception ex) { ValidationMessage = $"Lỗi: {ex.Message}"; }
+        }
     }
 
-    private void SearchProducts()
+    private void ExecuteCancel() { IsEditing = false; SelectedProduct = null; }
+
+    private void ExecuteBrowseImage()
     {
-        // TODO: Implement search
+        var dialog = new OpenFileDialog { Filter = "Image files|*.png;*.jpg;*.jpeg;*.bmp" };
+        if (dialog.ShowDialog() == true) EditImagePath = dialog.FileName;
     }
 }

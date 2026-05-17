@@ -8,50 +8,47 @@
         <converters:StringNotEmptyConverter x:Key="StringNotEmpty"/>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="360"/>
-        </Grid.ColumnDefinitions>
+    <Border Style="{StaticResource CardStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <!-- Left: List -->
-        <Border Style="{StaticResource CardStyle}" Margin="0,0,12,0">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <TextBlock Text="Danh sách nhà cung cấp" Style="{StaticResource HeadlineStyle}"/>
+                <Button Content="+ Thêm mới" Style="{StaticResource PrimaryButtonStyle}"
+                        Command="{Binding AddCommand}" HorizontalAlignment="Right"/>
+            </Grid>
 
-                <Grid Grid.Row="0" Margin="0,0,0,16">
-                    <TextBlock Text="Danh sách nhà cung cấp" Style="{StaticResource HeadlineStyle}"/>
-                    <Button Content="+ Thêm mới" 
-                            Style="{StaticResource PrimaryButtonStyle}"
-                            Command="{Binding AddCommand}"
-                            HorizontalAlignment="Right"/>
-                </Grid>
+            <TextBox Grid.Row="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource SearchTextBoxStyle}" Margin="0,0,0,12"/>
 
-                <TextBox Grid.Row="1" 
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource SearchTextBoxStyle}"
-                         Margin="0,0,0,12"/>
-
-                <DataGrid Grid.Row="2" 
-                          ItemsSource="{Binding Suppliers}"
-                          SelectedItem="{Binding SelectedSupplier}"
-                          Style="{StaticResource MacDataGridStyle}"
-                          ColumnHeaderStyle="{StaticResource MacDataGridColumnHeaderStyle}"
-                          CellStyle="{StaticResource MacDataGridCellStyle}"
-                          RowStyle="{StaticResource MacDataGridRowStyle}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
-                        <DataGridTextColumn Header="Tên NCC" Binding="{Binding Name}" Width="*"/>
-                        <DataGridTextColumn Header="Điện thoại" Binding="{Binding Phone}" Width="110"/>
-                        <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="150"/>
-                        <DataGridTemplateColumn Header="Trạng thái" Width="90">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border CornerRadius="10" Padding="8,3" HorizontalAlignment="Left">
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Suppliers}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,0,0,4" CornerRadius="8" Background="White"
+                                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                    Cursor="Hand" MouseLeftButtonDown="Item_Click">
+                                <Grid Margin="16,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="90"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Id}" Foreground="{StaticResource SecondaryTextBrush}"
+                                               FontFamily="{StaticResource SFProFont}" FontSize="13" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="Medium"
+                                               FontFamily="{StaticResource SFProFont}" FontSize="13" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Phone}" Foreground="{StaticResource SecondaryTextBrush}"
+                                               FontFamily="{StaticResource SFProFont}" FontSize="13" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding Email}" Foreground="{StaticResource SecondaryTextBrush}"
+                                               FontFamily="{StaticResource SFProFont}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    <Border Grid.Column="4" CornerRadius="10" Padding="8,3" HorizontalAlignment="Left" VerticalAlignment="Center">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Setter Property="Background" Value="#FFF0EB"/>
@@ -62,7 +59,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </Border.Style>
-                                        <TextBlock FontSize="11" FontWeight="Medium">
+                                        <TextBlock FontSize="11" FontWeight="Medium" FontFamily="{StaticResource SFProFont}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Text" Value="Ẩn"/>
@@ -77,54 +74,83 @@
                                             </TextBlock.Style>
                                         </TextBlock>
                                     </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-        </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
-        <!-- Right: Edit Form -->
-        <Border Grid.Column="1" Style="{StaticResource CardStyle}"
-                Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibility}}">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <!-- Slide-up Edit Panel -->
+            <Border Grid.Row="2" VerticalAlignment="Bottom"
+                    Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibility}}"
+                    Background="White" CornerRadius="12" Padding="20" Margin="0,8,0,0"
+                    BorderBrush="{StaticResource AccentBlueBrush}" BorderThickness="1">
+                <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" From="20" To="0" Duration="0:0:0.3">
+                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.12" Color="#000000"/>
+                </Border.Effect>
+
                 <StackPanel>
-                    <TextBlock Text="Thông tin nhà cung cấp" 
-                               Style="{StaticResource HeadlineStyle}" Margin="0,0,0,20"/>
+                    <TextBlock Text="Thông tin nhà cung cấp" Style="{StaticResource HeadlineStyle}" Margin="0,0,0,16"/>
 
-                    <TextBlock Text="TÊN NHÀ CUNG CẤP" Style="{StaticResource FormLabelStyle}"/>
-                    <TextBox Text="{Binding EditName, UpdateSourceTrigger=PropertyChanged}" 
-                             Style="{StaticResource MacTextBoxStyle}" Margin="0,0,0,12"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/><ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/><ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="TÊN NHÀ CUNG CẤP" Style="{StaticResource FormLabelStyle}"/>
+                            <TextBox Text="{Binding EditName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="ĐIỆN THOẠI" Style="{StaticResource FormLabelStyle}"/>
+                            <TextBox Text="{Binding EditPhone, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="EMAIL" Style="{StaticResource FormLabelStyle}"/>
+                            <TextBox Text="{Binding EditEmail, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                        </StackPanel>
+                    </Grid>
 
-                    <TextBlock Text="ĐỊA CHỈ" Style="{StaticResource FormLabelStyle}"/>
-                    <TextBox Text="{Binding EditAddress, UpdateSourceTrigger=PropertyChanged}" 
-                             Style="{StaticResource MacTextBoxStyle}" Margin="0,0,0,12"/>
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="ĐỊA CHỈ" Style="{StaticResource FormLabelStyle}"/>
+                            <TextBox Text="{Binding EditAddress, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="GHI CHÚ" Style="{StaticResource FormLabelStyle}"/>
+                            <TextBox Text="{Binding EditNote, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MacTextBoxStyle}"/>
+                        </StackPanel>
+                    </Grid>
 
-                    <TextBlock Text="ĐIỆN THOẠI" Style="{StaticResource FormLabelStyle}"/>
-                    <TextBox Text="{Binding EditPhone, UpdateSourceTrigger=PropertyChanged}" 
-                             Style="{StaticResource MacTextBoxStyle}" Margin="0,0,0,12"/>
+                    <CheckBox Content="Đang hoạt động" IsChecked="{Binding EditIsActive}"
+                              FontFamily="{StaticResource SFProFont}" FontSize="13" Margin="0,12,0,0"/>
 
-                    <TextBlock Text="EMAIL" Style="{StaticResource FormLabelStyle}"/>
-                    <TextBox Text="{Binding EditEmail, UpdateSourceTrigger=PropertyChanged}" 
-                             Style="{StaticResource MacTextBoxStyle}" Margin="0,0,0,12"/>
-
-                    <TextBlock Text="GHI CHÚ" Style="{StaticResource FormLabelStyle}"/>
-                    <TextBox Text="{Binding EditNote, UpdateSourceTrigger=PropertyChanged}" 
-                             Style="{StaticResource MacTextBoxStyle}" 
-                             Height="60" TextWrapping="Wrap" AcceptsReturn="True"
-                             VerticalContentAlignment="Top"
-                             Margin="0,0,0,12"/>
-
-                    <CheckBox Content="Đang hoạt động" 
-                              IsChecked="{Binding EditIsActive}"
-                              FontFamily="{StaticResource SFProFont}" FontSize="13"
-                              Margin="0,0,0,20"/>
-
-                    <!-- Validation -->
-                    <TextBlock Text="{Binding ValidationMessage}" 
-                               FontFamily="{StaticResource SFProFont}" FontSize="12"
-                               TextWrapping="Wrap" Margin="0,0,0,16">
+                    <TextBlock Text="{Binding ValidationMessage}" FontFamily="{StaticResource SFProFont}" FontSize="12"
+                               TextWrapping="Wrap" Margin="0,8,0,0">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="{StaticResource AccentRedBrush}"/>
@@ -141,25 +167,13 @@
                         </TextBlock.Style>
                     </TextBlock>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="Hủy" Style="{StaticResource SecondaryButtonStyle}"
-                                Command="{Binding CancelCommand}" Margin="0,0,8,0"/>
-                        <Button Content="Xóa" Style="{StaticResource DangerButtonStyle}"
-                                Command="{Binding DeleteCommand}" Margin="0,0,8,0"/>
-                        <Button Content="Lưu" Style="{StaticResource PrimaryButtonStyle}"
-                                Command="{Binding SaveCommand}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+                        <Button Content="Hủy" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding CancelCommand}" Margin="0,0,8,0"/>
+                        <Button Content="Xóa" Style="{StaticResource DangerButtonStyle}" Command="{Binding DeleteCommand}" Margin="0,0,8,0"/>
+                        <Button Content="Lưu" Style="{StaticResource PrimaryButtonStyle}" Command="{Binding SaveCommand}"/>
                     </StackPanel>
                 </StackPanel>
-            </ScrollViewer>
-        </Border>
-
-        <Border Grid.Column="1" Style="{StaticResource CardStyle}"
-                Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="🏭" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,12"/>
-                <TextBlock Text="Chọn hoặc thêm nhà cung cấp" 
-                           Style="{StaticResource SecondaryBodyStyle}" HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Border>
-    </Grid>
+            </Border>
+        </Grid>
+    </Border>
 </UserControl>

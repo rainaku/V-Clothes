@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using VClothes.Data;
 
 namespace VClothes.ViewModels;
 
@@ -16,7 +17,7 @@ public class SalesInvoiceDisplayItem
 
 public class RevenueStatisticsViewModel : BaseViewModel
 {
-    private DateTime _fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+    private DateTime _fromDate = new DateTime(2024, 1, 1);
     private DateTime _toDate = DateTime.Now;
     private decimal _totalRevenue;
     private int _totalInvoices;
@@ -37,10 +38,34 @@ public class RevenueStatisticsViewModel : BaseViewModel
     public RevenueStatisticsViewModel()
     {
         FilterCommand = new RelayCommand(_ => LoadStatistics());
+        try { LoadStatistics(); } catch { }
     }
 
     private void LoadStatistics()
     {
-        // TODO: Implement data loading
+        try
+        {
+            var invoices = SupabaseClient.Get<SalesInvoiceDto>("sales_invoices",
+                $"select=*,customers(*),employees(*)&invoice_date=gte.{FromDate:yyyy-MM-dd}&invoice_date=lte.{ToDate:yyyy-MM-dd}&order=invoice_date.desc");
+
+            TotalInvoices = invoices.Count;
+            TotalRevenue = invoices.Sum(i => i.FinalAmount);
+            AveragePerInvoice = TotalInvoices > 0 ? TotalRevenue / TotalInvoices : 0;
+            EstimatedProfit = TotalRevenue * 0.3m; // Estimate
+
+            var displayItems = invoices.Select(i => new SalesInvoiceDisplayItem
+            {
+                InvoiceCode = i.InvoiceCode,
+                InvoiceDate = i.InvoiceDate,
+                CustomerName = i.Customer?.FullName ?? "Khách lẻ",
+                EmployeeName = i.Employee?.FullName ?? "N/A",
+                TotalAmount = i.TotalAmount,
+                Discount = i.Discount,
+                FinalAmount = i.FinalAmount
+            }).ToList();
+
+            SalesInvoices = new ObservableCollection<SalesInvoiceDisplayItem>(displayItems);
+        }
+        catch { }
     }
 }
