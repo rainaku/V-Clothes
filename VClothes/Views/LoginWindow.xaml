@@ -32,7 +32,10 @@
             </Grid.ColumnDefinitions>
 
             <!-- Left Panel - Branding -->
-            <Border Grid.Column="0" CornerRadius="12,0,0,12" Background="#001F3F">
+            <Border Grid.Column="0" CornerRadius="12,0,0,12">
+                <Border.Background>
+                    <ImageBrush ImageSource="/Styles/C6D811AD-D785-4611-91CE-3AA6E721CB89.webp" Stretch="UniformToFill"/>
+                </Border.Background>
 
                 <Grid>
                     <!-- Close Button -->
