@@ -171,16 +171,103 @@
                 </Border>
             </UniformGrid>
 
-            <!-- Welcome Card -->
+            <!-- Thao tác nhanh -->
             <Border Style="{StaticResource CardStyle}">
                 <StackPanel>
-                    <TextBlock Text="Chào mừng đến với V-Clothes" 
-                               Style="{StaticResource Title3Style}" Margin="0,0,0,8"/>
-                    <TextBlock TextWrapping="Wrap" Style="{StaticResource SecondaryBodyStyle}">
-                        Hệ thống quản lý cửa hàng áo thun giúp bạn quản lý sản phẩm, 
-                        theo dõi doanh thu, và tối ưu hóa hoạt động kinh doanh. 
-                        Sử dụng menu bên trái để điều hướng đến các chức năng.
-                    </TextBlock>
+                    <TextBlock Text="Thao tác nhanh" 
+                               Style="{StaticResource Title3Style}" Margin="0,0,0,12"/>
+                    <UniformGrid Columns="3" Rows="2">
+                        <!-- Loại sản phẩm -->
+                        <Border Margin="0,0,8,8" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
+                                Cursor="Hand" Tag="Categories" MouseLeftButtonDown="QuickAction_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="36" Height="36" CornerRadius="8" Background="#F0EBFF" Margin="0,0,12,0">
+                                    <TextBlock Text="🏷️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Loại sản phẩm" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="13" FontWeight="Medium"/>
+                                    <TextBlock Text="Quản lý danh mục" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="11" Foreground="{StaticResource SecondaryTextBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <!-- Nhà cung cấp -->
+                        <Border Margin="4,0,4,8" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
+                                Cursor="Hand" Tag="Suppliers" MouseLeftButtonDown="QuickAction_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="36" Height="36" CornerRadius="8" Background="#EBF5FF" Margin="0,0,12,0">
+                                    <TextBlock Text="🏭" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Nhà cung cấp" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="13" FontWeight="Medium"/>
+                                    <TextBlock Text="Quản lý NCC" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="11" Foreground="{StaticResource SecondaryTextBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <!-- Sản phẩm -->
+                        <Border Margin="8,0,0,8" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
+                                Cursor="Hand" Tag="Products" MouseLeftButtonDown="QuickAction_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="36" Height="36" CornerRadius="8" Background="#EBFFF0" Margin="0,0,12,0">
+                                    <TextBlock Text="👕" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Sản phẩm" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="13" FontWeight="Medium"/>
+                                    <TextBlock Text="Quản lý kho hàng" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="11" Foreground="{StaticResource SecondaryTextBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <!-- Nhân viên -->
+                        <Border Margin="0,0,8,0" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
+                                Cursor="Hand" Tag="Employees" MouseLeftButtonDown="QuickAction_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="36" Height="36" CornerRadius="8" Background="#FFF5EB" Margin="0,0,12,0">
+                                    <TextBlock Text="👤" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Nhân viên" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="13" FontWeight="Medium"/>
+                                    <TextBlock Text="Quản lý nhân sự" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="11" Foreground="{StaticResource SecondaryTextBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <!-- Phiếu nhập hàng -->
+                        <Border Margin="4,0,4,0" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
+                                Cursor="Hand" Tag="PurchaseInvoices" MouseLeftButtonDown="QuickAction_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="36" Height="36" CornerRadius="8" Background="#FFF0EB" Margin="0,0,12,0">
+                                    <TextBlock Text="📦" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Phiếu nhập hàng" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="13" FontWeight="Medium"/>
+                                    <TextBlock Text="Nhập kho" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="11" Foreground="{StaticResource SecondaryTextBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <!-- Hóa đơn bán hàng -->
+                        <Border Margin="8,0,0,0" CornerRadius="10" Background="#F5F5F7" Padding="16,14"
+                                Cursor="Hand" Tag="SalesInvoices" MouseLeftButtonDown="QuickAction_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="36" Height="36" CornerRadius="8" Background="#EBFFF5" Margin="0,0,12,0">
+                                    <TextBlock Text="🧾" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Hóa đơn bán hàng" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="13" FontWeight="Medium"/>
+                                    <TextBlock Text="Bán hàng" FontFamily="{StaticResource SFProFont}" 
+                                               FontSize="11" Foreground="{StaticResource SecondaryTextBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
                 </StackPanel>
             </Border>
         </StackPanel>

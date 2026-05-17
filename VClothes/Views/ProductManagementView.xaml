@@ -53,8 +53,8 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="120"/>
                                         <ColumnDefinition Width="100"/>
                                         <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="80"/>
@@ -62,11 +62,44 @@
                                     <TextBlock Text="{Binding ProductCode}" FontFamily="{StaticResource SFProFont}" FontSize="12"
                                                Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="Medium"
-                                               FontFamily="{StaticResource SFProFont}" FontSize="13" VerticalAlignment="Center"/>
+                                               FontFamily="{StaticResource SFProFont}" FontSize="13" VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"/>
                                     <TextBlock Grid.Column="2" Text="{Binding Size}" FontFamily="{StaticResource SFProFont}" FontSize="12"
-                                               Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="3" Text="{Binding Color}" FontFamily="{StaticResource SFProFont}" FontSize="12"
-                                               Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                                               Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"/>
+                                    <!-- Color column with marquee -->
+                                    <Border Grid.Column="3" ClipToBounds="True" VerticalAlignment="Center" Margin="0,0,8,0">
+                                        <Canvas Height="16">
+                                            <TextBlock Text="{Binding Color}" FontFamily="{StaticResource SFProFont}" FontSize="12"
+                                                       Foreground="{StaticResource SecondaryTextBrush}" Canvas.Top="0">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="RenderTransform">
+                                                            <Setter.Value>
+                                                                <TranslateTransform X="0"/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Trigger.EnterActions>
+                                                                    <BeginStoryboard x:Name="MarqueeStory">
+                                                                        <Storyboard RepeatBehavior="Forever">
+                                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                                                                             From="0" To="-80" Duration="0:0:2"
+                                                                                             AutoReverse="True"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </Trigger.EnterActions>
+                                                                <Trigger.ExitActions>
+                                                                    <StopStoryboard BeginStoryboardName="MarqueeStory"/>
+                                                                </Trigger.ExitActions>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Canvas>
+                                    </Border>
                                     <TextBlock Grid.Column="4" Text="{Binding Price, Converter={StaticResource CurrencyConverter}}"
                                                FontFamily="{StaticResource SFProFont}" FontSize="12" FontWeight="Medium" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="5" Text="{Binding StockQuantity}" FontFamily="{StaticResource SFProFont}" FontSize="12"
