@@ -38,23 +38,6 @@
                 </Border.Background>
 
                 <Grid>
-                    <!-- Close Button -->
-                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" 
-                            Margin="16,16,0,0" Width="12" Height="12"
-                            Click="CloseButton_Click"
-                            Cursor="Hand">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Ellipse x:Name="dot" Fill="#FF5F57" Width="12" Height="12"/>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="dot" Property="Fill" Value="#E0443E"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40">
                         <TextBlock Text="V Clothes" 
                                    FontFamily="{StaticResource SFProFont}"
@@ -81,16 +64,39 @@
 
             <!-- Right Panel - Login Form -->
             <Grid Grid.Column="1" Margin="40,0">
-                <!-- macOS Window Dots -->
+                <!-- Windows Window Controls -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" 
-                            HorizontalAlignment="Right" Margin="0,16,16,0">
-                    <Button Click="MinimizeButton_Click" Cursor="Hand" Margin="4,0">
+                            HorizontalAlignment="Right" Margin="0,8,8,0">
+                    <!-- Minimize -->
+                    <Button Click="MinimizeButton_Click" Cursor="Hand" Width="36" Height="28" Margin="0,0,0,0">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Ellipse x:Name="dot" Fill="#FFBD2E" Width="12" Height="12"/>
+                                <Border x:Name="bg" Background="Transparent" CornerRadius="4">
+                                    <TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="{StaticResource SecondaryTextBrush}"/>
+                                </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="dot" Property="Fill" Value="#E0A528"/>
+                                        <Setter TargetName="bg" Property="Background" Value="#E5E5E5"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <!-- Close -->
+                    <Button Click="CloseButton_Click" Cursor="Hand" Width="36" Height="28" Margin="0,0,0,0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bg" Background="Transparent" CornerRadius="4">
+                                    <TextBlock x:Name="icon" Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="{StaticResource SecondaryTextBrush}"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bg" Property="Background" Value="#E81123"/>
+                                        <Setter TargetName="icon" Property="Foreground" Value="White"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>

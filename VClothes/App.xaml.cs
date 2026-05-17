@@ -1,6 +1,6 @@
 using System.Windows;
 using VClothes.Data;
-using VClothes.Services;
+using VClothes.Views;
 
 namespace VClothes;
 
@@ -30,12 +30,5 @@ public partial class App : Application
         {
             // App can still run - will show errors when accessing data
         }
-
-        // Auto-login as admin for direct access
-        try
-        {
-            AuthService.Login("admin", "123456");
-        }
-        catch { }
     }
 }
