@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace VClothes.Data;
 
-// DTOs ánh xạ trực tiếp với Supabase PostgREST JSON (snake_case)
+
 
 public class VaiTroDto
 {
