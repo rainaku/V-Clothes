@@ -127,13 +127,8 @@
 
                         <!-- App Logo -->
                         <StackPanel Orientation="Horizontal" Margin="4,0,0,0">
-                            <Border Width="32" Height="32" CornerRadius="8" 
-                                    Background="#3A3A3C" Margin="0,0,10,0">
-                                <TextBlock Text="👕" FontSize="16" 
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="V-Clothes" 
+                                <TextBlock Text="V Clothes" 
                                            FontFamily="{StaticResource SFProFont}"
                                            FontSize="14" FontWeight="SemiBold"
                                            Foreground="White"/>
@@ -267,18 +262,11 @@
                             Padding="16,12">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Border Width="36" Height="36" CornerRadius="18" 
-                                    Background="#3A3A3C">
-                                <TextBlock Text="👤" FontSize="16" 
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding TenHienThiNguoiDung}" 
                                            FontFamily="{StaticResource SFProFont}"
                                            FontSize="12" FontWeight="Medium"
@@ -289,7 +277,7 @@
                                            Foreground="{StaticResource SidebarSecondaryTextBrush}"/>
                             </StackPanel>
 
-                            <Button Grid.Column="2" 
+                            <Button Grid.Column="1" 
                                     Command="{Binding LenhDangXuat}"
                                     ToolTip="Đăng xuất"
                                     Cursor="Hand">
