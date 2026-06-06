@@ -13,6 +13,7 @@ public partial class MainWindow : Window
         if (DataContext is ChinhViewModel vm)
         {
             vm.YeuCauDangXuat += KhiYeuCauDangXuat;
+            Closed += (_, _) => vm.HuyDangKy();
         }
     }
 

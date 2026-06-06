@@ -19,7 +19,7 @@ Unicode True
 VIProductVersion "1.0.0.0"
 VIAddVersionKey "ProductName" "V Clothes"
 VIAddVersionKey "CompanyName" "V Clothes"
-VIAddVersionKey "FileDescription" "V Clothes - He thong quan ly cua hang ao thun"
+VIAddVersionKey "FileDescription" "V Clothes - Store Management System"
 VIAddVersionKey "FileVersion" "1.0.0.0"
 VIAddVersionKey "LegalCopyright" "(c) 2025 V Clothes"
 
@@ -28,8 +28,7 @@ VIAddVersionKey "LegalCopyright" "(c) 2025 V Clothes"
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\VClothes.exe"
-!define MUI_FINISHPAGE_RUN_TEXT "Khởi chạy V Clothes"
-!define MUI_FINISHPAGE_RUN_NOTCHECKED 0
+!define MUI_FINISHPAGE_RUN_TEXT "Launch V Clothes"
 
 ; ============ Pages ============
 !insertmacro MUI_PAGE_WELCOME
@@ -41,7 +40,7 @@ VIAddVersionKey "LegalCopyright" "(c) 2025 V Clothes"
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ; ============ Language ============
-!insertmacro MUI_LANGUAGE "Vietnamese"
+!insertmacro MUI_LANGUAGE "English"
 
 ; ============ Install Section ============
 Section "Install"
@@ -56,7 +55,7 @@ Section "Install"
     ; Start Menu shortcut
     CreateDirectory "$SMPROGRAMS\V Clothes"
     CreateShortcut "$SMPROGRAMS\V Clothes\V Clothes.lnk" "$INSTDIR\VClothes.exe"
-    CreateShortcut "$SMPROGRAMS\V Clothes\Go cai dat.lnk" "$INSTDIR\Uninstall.exe"
+    CreateShortcut "$SMPROGRAMS\V Clothes\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
     
     ; Desktop shortcut
     CreateShortcut "$DESKTOP\V Clothes.lnk" "$INSTDIR\VClothes.exe"
@@ -80,7 +79,7 @@ Section "Uninstall"
     
     ; Remove shortcuts
     Delete "$SMPROGRAMS\V Clothes\V Clothes.lnk"
-    Delete "$SMPROGRAMS\V Clothes\Go cai dat.lnk"
+    Delete "$SMPROGRAMS\V Clothes\Uninstall.lnk"
     RMDir "$SMPROGRAMS\V Clothes"
     Delete "$DESKTOP\V Clothes.lnk"
     

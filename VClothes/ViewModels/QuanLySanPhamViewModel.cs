@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
 using VClothes.Data;
+using VClothes.Services;
 
 namespace VClothes.ViewModels;
 
@@ -195,7 +196,7 @@ public class QuanLySanPhamViewModel : ViewModelCha
 
             TaiDuLieu();
             ThucHienHuy();
-            ThongBaoXacThuc = "Lưu thành công!";
+            DichVuThongBao.ThanhCong("Lưu thành công!");
         }
         catch (Exception ex) { ThongBaoXacThuc = $"Lỗi: {ex.Message}"; }
     }

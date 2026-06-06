@@ -119,3 +119,41 @@ public class InverseBoolConverter : IValueConverter
         return true;
     }
 }
+
+public class ToastMauNenConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        // Tránh phụ thuộc trực tiếp vào enum để giữ converter độc lập
+        var ten = value?.ToString();
+        var mau = ten switch
+        {
+            "ThanhCong" => "#34C759",
+            "Loi" => "#FF3B30",
+            "CanhBao" => "#FF9500",
+            _ => "#007AFF"
+        };
+        return new System.Windows.Media.BrushConverter().ConvertFromString(mau)!;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
+}
+
+public class ToastIconConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var ten = value?.ToString();
+        return ten switch
+        {
+            "ThanhCong" => "\uE73E", // check mark
+            "Loi" => "\uE711",       // cancel
+            "CanhBao" => "\uE7BA",   // warning
+            _ => "\uE946"            // info
+        };
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
+}

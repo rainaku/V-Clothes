@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using VClothes.Data;
+using VClothes.Services;
 
 namespace VClothes.ViewModels;
 
@@ -139,7 +140,8 @@ public class QuanLyNhaCungCapViewModel : ViewModelCha
                 SupabaseClient.CapNhat("suppliers", $"id=eq.{NccDuocChon.Id}", duLieu);
             else
                 SupabaseClient.ThemMoi<NhaCungCapDto>("suppliers", duLieu);
-            TaiDanhSach(); ThucHienHuy(); ThongBaoXacThuc = "Lưu thành công!";
+            TaiDanhSach(); ThucHienHuy();
+            DichVuThongBao.ThanhCong("Lưu thành công!");
         }
         catch (Exception ex) { ThongBaoXacThuc = $"Lỗi: {ex.Message}"; }
     }

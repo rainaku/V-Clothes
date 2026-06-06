@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using System.Windows.Threading;
 using VClothes.Services;
 
 namespace VClothes.ViewModels;
@@ -8,6 +9,11 @@ public class ChinhViewModel : ViewModelCha
     private ViewModelCha _viewModelHienTai;
     private string _tieuDeHienTai = "Tổng quan";
     private string _menuDuocChon = "TongQuan";
+
+    private bool _toastHienThi;
+    private string _toastThongDiep = string.Empty;
+    private LoaiThongBao _toastLoai = LoaiThongBao.ThongTin;
+    private readonly DispatcherTimer _boDemToast;
 
     public ViewModelCha ViewModelHienTai
     {
@@ -65,6 +71,25 @@ public class ChinhViewModel : ViewModelCha
 
     public ICommand LenhDieuHuong { get; }
     public ICommand LenhDangXuat { get; }
+    public ICommand LenhDongToast { get; }
+
+    public bool ToastHienThi
+    {
+        get => _toastHienThi;
+        set => GanGiaTri(ref _toastHienThi, value);
+    }
+
+    public string ToastThongDiep
+    {
+        get => _toastThongDiep;
+        set => GanGiaTri(ref _toastThongDiep, value);
+    }
+
+    public LoaiThongBao ToastLoai
+    {
+        get => _toastLoai;
+        set => GanGiaTri(ref _toastLoai, value);
+    }
 
     public event Action? YeuCauDangXuat;
 
@@ -73,6 +98,35 @@ public class ChinhViewModel : ViewModelCha
         _viewModelHienTai = new TongQuanViewModel();
         LenhDieuHuong = new LenhRelay(ThucHienDieuHuong);
         LenhDangXuat = new LenhRelay(ThucHienDangXuat);
+        LenhDongToast = new LenhRelay(_ => AnToast());
+
+        _boDemToast = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
+        _boDemToast.Tick += (_, _) => AnToast();
+
+        DichVuThongBao.KhiCoThongBao += HienThiToast;
+    }
+
+    private void HienThiToast(string thongDiep, LoaiThongBao loai)
+    {
+        ToastThongDiep = thongDiep;
+        ToastLoai = loai;
+        ToastHienThi = true;
+
+        _boDemToast.Stop();
+        _boDemToast.Start();
+    }
+
+    private void AnToast()
+    {
+        _boDemToast.Stop();
+        ToastHienThi = false;
+    }
+
+    /// <summary>Hủy đăng ký sự kiện thông báo khi cửa sổ đóng để tránh rò rỉ/nhân đôi toast.</summary>
+    public void HuyDangKy()
+    {
+        _boDemToast.Stop();
+        DichVuThongBao.KhiCoThongBao -= HienThiToast;
     }
 
     private void ThucHienDieuHuong(object? thamSo)

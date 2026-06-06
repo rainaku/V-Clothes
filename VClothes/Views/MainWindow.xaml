@@ -18,6 +18,8 @@
 
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:ToastMauNenConverter x:Key="ToastMauNen"/>
+        <converters:ToastIconConverter x:Key="ToastIcon"/>
 
         <!-- View DataTemplates -->
         <DataTemplate DataType="{x:Type vm:TongQuanViewModel}">
@@ -351,6 +353,83 @@
                     </ContentControl.Triggers>
                 </ContentControl>
             </Grid>
+
+            <!-- Toast Notification (đồng bộ toàn hệ thống) -->
+            <Border Grid.Column="0" Grid.ColumnSpan="2"
+                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Margin="0,20,28,0" MinWidth="280" MaxWidth="420"
+                    CornerRadius="10" Padding="16,12"
+                    Background="White"
+                    Visibility="{Binding ToastHienThi, Converter={StaticResource BoolToVisibility}}"
+                    Panel.ZIndex="100">
+                <Border.RenderTransform>
+                    <TranslateTransform/>
+                </Border.RenderTransform>
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="24" ShadowDepth="4" Opacity="0.18" Color="#000000"/>
+                </Border.Effect>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ToastHienThi}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.25"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)" From="60" To="0" Duration="0:0:0.3">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Icon trong vòng tròn màu theo loại thông báo -->
+                    <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16"
+                            VerticalAlignment="Center" Margin="0,0,12,0"
+                            Background="{Binding ToastLoai, Converter={StaticResource ToastMauNen}}">
+                        <TextBlock Text="{Binding ToastLoai, Converter={StaticResource ToastIcon}}"
+                                   FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <TextBlock Grid.Column="1" Text="{Binding ToastThongDiep}"
+                               FontFamily="{StaticResource SFProFont}" FontSize="13" FontWeight="Medium"
+                               Foreground="{StaticResource PrimaryTextBrush}"
+                               TextWrapping="Wrap" VerticalAlignment="Center"/>
+
+                    <Button Grid.Column="2" Command="{Binding LenhDongToast}"
+                            Cursor="Hand" VerticalAlignment="Center" Margin="12,0,0,0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bg" Background="Transparent" CornerRadius="4" Width="22" Height="22">
+                                    <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bg" Property="Background" Value="{StaticResource HoverBackgroundBrush}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
         </Grid>
     </Border>
 </Window>
